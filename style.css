@@ -1,46 +1,28 @@
-body {
-    margin: 0;
+html, body {
+    height: 100%;
+    margin: 0; 
+    padding: 0; 
 }
 
-.navbar {
-    width: 100%;
-    background-color: black;
-    height: 5em;
-}
-
-.texteIntroduction {
-    width: 100%;
-    background-color: aqua;
-    height: 4em;
-}
-
-.container {
+.sidebar {
+    width: 25%;
+    height: 100%;
     display: flex;
-    flex-wrap: wrap;
-    width: 100%;
+    justify-content: center;
+    background-color: aqua;
+}
+
+.lien-sidebar {
+    margin: 2em;
+}
+
+.dashboard {
+    background-color: lightgrey;
+    width: 75%;
     height: 100%;
 }
 
-.lienEnregistrerClient {
-    width: 50%;
-    background-color: red;
-    height: 20em;
-}
-
-.lienGérerPrêts {
-    width: 50%;
-    background-color: green;
-    height: 20em;
-}
-
-.lienSuivrePaiements {
-    width: 50%;
-    background-color: blue;
-    height: 20em;
-}
-
-.lienTableauBord {
-    width: 50%;
-    background-color: purple;
-    height: 20em;
+main {
+    display: flex;
+    height: 100%; 
 }
