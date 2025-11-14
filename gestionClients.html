@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BES Loan | Clients</title>
-    <link rel="stylesheet" href="style.css">
+    <title>BES Loan | Prêts</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
+    <link rel="stylesheet" href="https://bulma.io/vendor/fontawesome-free-6.5.2-web/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <main>
         <div class="sidebar">
@@ -30,8 +33,100 @@
                     </div>
                 </ul>
             </aside>
-        </div>       
-        <div class="dashboard"></div>
+        </div>
+        <div class="formulairePrets">
+            <!-- Titre qui indique l'ajout d'un nouveau client-->
+            <h1 class="title">Créer un nouveau client</h1>
+            <!-- Entrée du nom du nouveau client -->
+            <div class="field is-horizontal">
+                <div class="field-label">
+                    <label class="label labelColor">Nom</label>
+                </div>
+                <div class="field-body">
+                    <div class="field">
+                        <div class="control has-icons-left">
+                            <input class="input" type="text" placeholder="Entrez le nom du nouveau client" required>
+                            <span class="icon is-normal is-left">
+                                <i class="fa-solid fa-user"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Entrée du prénom du nouveau client -->
+            <div class="field is-horizontal">
+                <div class="field-label">
+                    <label class="label labelColor">Prénom</label>
+                </div>
+                <div class="field-body">
+                    <div class="field">
+                        <div class="control has-icons-left">
+                            <input class="input" type="text" placeholder="Entrez le prénom du nouveau client" required>
+                            <span class="icon is-normal is-left">
+                                <i class="fa-solid fa-user"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Entrée du téléphone du nouveau client -->
+            <div class="field is-horizontal">
+                <div class="field-label">
+                    <label class="label labelColor">Téléphone</label>
+                </div>
+                <div class="field-body">
+                    <div class="field">
+                        <div class="control has-icons-left">
+                            <input class="input" type="tel"
+                                placeholder="Entrez le numéro de téléphone du nouveau client" required>
+                            <span class="icon is-normal is-left">
+                                <i class="fa-solid fa-phone"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Entrée de l'email du nouveau client -->
+            <div class="field is-horizontal">
+                <div class="field-label">
+                    <label class="label labelColor">Email</label>
+                </div>
+                <div class="field-body">
+                    <div class="field">
+                        <div class="control has-icons-left">
+                            <input class="input" type="text" placeholder="Entrez le nom du nouveau client" required>
+                            <span class="icon is-normal is-left">
+                                <i class="fa-solid fa-envelope"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input de la date de début du prêt -->
+            <!-- mettre id pour récuppérer avec js et calculer les intérêts totaux -->
+            <div class="field is-horizontal">
+                <div class="field-label">
+                    <label class="label labelColor">Date de début</label>
+                </div>
+                <div class="field-body">
+                    <div class="field">
+                        <div class="control">
+                            <input class="input" type="date">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Calcule automatiquement intérêts cumulés, solde restant, statut (ACTIF, REMBOURSÉ, EN RETARD).-->
+
+
     </main>
 </body>
+
 </html>
