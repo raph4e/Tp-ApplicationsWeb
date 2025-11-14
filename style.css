@@ -1,26 +1,24 @@
+/* Division des sections de la page */
 html, body {
     height: 100%;
     margin: 0; 
     padding: 0; 
 }
 
-.sidebar {
-    width: 25%;
+.partieGauche {
     height: 100%;
+    width: 30%;
     display: flex;
     justify-content: center;
-    background-color: aqua;
 }
 
-.lien-sidebar {
-    margin: 2em;
-}
-
-.dashboard {
-    background-color: lightgrey;
-    width: 75%;
+.partieDroite {
     height: 100%;
+    width: 50%;
+    border-left: solid 0.3em black;
+    border-radius: 2px;
 }
+
 
 main {
     display: flex;
@@ -28,14 +26,29 @@ main {
     background-color: azure;
 }
 
-.formulairePrets {
+
+/* Partie pour la sidebar */
+.sidebar {
+    width: 20%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    background-color: aqua;
+    border-right: solid 0.3em black;
+}
+
+.lien-sidebar {
+    margin: 2em;
+}
+
+/* Partie pour l'ajout de nouveaux prêts, clients, paiements, etc... */
+.formulaire {
     display: flex;
     flex-wrap: wrap;
     gap: 1.5em;
     padding: 1.1em;
     flex-direction: column;
     margin-top: 1.5em;
-    margin-left: 1.5em;
 }
 
 .labelColor{
@@ -50,10 +63,33 @@ main {
 .titreInput {
     text-align: center;
     width: 5em;
-    flex: none;
-    
+    flex: none;    
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .bodyInput {
     width: 15em;
+}
+
+/* Partie pour le tableau qui affiche la liste de clients, prêts, paiements, etc... */
+
+.tableau {
+    height: 50%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 1.5em;
+    padding: 1.1em;
+    flex-direction: column;
+    border-bottom: solid 0.3em black;
+    border-radius: 2px;
+}
+
+/* Partie pour la selection, qui va afficher les infos */
+.selection {
+    height: 50%;
+    width: 100%; 
 }

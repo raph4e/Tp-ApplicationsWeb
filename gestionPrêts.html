@@ -34,100 +34,106 @@
                 </ul>
             </aside>
         </div>
-
-        <!-- Sélection du client avec un drop down menu, à changer pour mettre les vrais clients via BD-->
-        <div class="formulairePrets">
-            <div class="field is-horizontal sectionInput">
-                <div class="field-label titreInput">
-                    <label class="label labelColor">Client</label>
+        <div class="partieGauche">
+            <!-- Sélection du client avec un drop down menu, à changer pour mettre les vrais clients via BD-->
+            <div class="formulaire">
+                <!-- Titre qui indique l'ajout d'un nouveau prêt-->
+                <h1 class="title">Enregistrer un nouveau prêt</h1>            
+                <div class="field is-horizontal sectionInput">
+                    <div class="field-label titreInput">
+                        <label class="label labelColor">Client</label>
+                    </div>
+                    <div class="field-body bodyInput">
+                        <div class="field">
+                            <div class="control has-icons-left">
+                                <div class="select">
+                                    <select>
+                                        <option selected>Sélectionner un client</option>
+                                        <option>Client 1</option>
+                                        <option>Client 2</option>
+                                        <option>Client 3</option>
+                                    </select>
+                                    <span class="icon is-normal is-left">
+                                        <i class="fa-solid fa-user"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="field-body bodyInput">
-                    <div class="field">
-                        <div class="control has-icons-left">
-                            <div class="select">
-                                <select>
-                                    <option selected>Sélectionner un client</option>
-                                    <option>Client 1</option>
-                                    <option>Client 2</option>
-                                    <option>Client 3</option>
-                                </select>
+
+                <!-- Entrée du montant du prêt -->
+                <!-- mettre un max? min + haut que 0? -->
+                <div class="field is-horizontal sectionInput">
+                    <div class="field-label titreInput">
+                        <label class="label labelColor">Montant du prêt</label>
+                    </div>
+                    <div class="field-body bodyInput">
+                        <div class="field">
+                            <div class="control has-icons-left">
+                                <input class="input" type="number" placeholder="$0.00" min="0">
                                 <span class="icon is-normal is-left">
-                                    <i class="fa-solid fa-user"></i>
+                                    <i class="fa-solid fa-dollar-sign"></i>
                                 </span>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Entrée du montant du prêt -->
-            <!-- mettre un max? min + haut que 0? -->
-            <div class="field is-horizontal sectionInput">
-                <div class="field-label titreInput">
-                    <label class="label labelColor">Montant du prêt</label>
-                </div>
-                <div class="field-body bodyInput">
-                    <div class="field">
-                        <div class="control has-icons-left">
-                            <input class="input" type="number" placeholder="$0.00" min="0">
-                            <span class="icon is-normal is-left">
-                                <i class="fa-solid fa-dollar-sign"></i>
-                            </span>
+                <!-- Entrée du taux d'interet -->
+                <!-- double check min/max values avec prof -->
+                <div class="field is-horizontal sectionInput">
+                    <div class="field-label titreInput">
+                        <label class="label labelColor">Taux d'intérêt</label>
+                    </div>
+                    <div class="field-body bodyInput">
+                        <div class="field">
+                            <div class="control">
+                                <input class="input" type="number" placeholder="0.00%" min="0" max="100">
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Entrée du taux d'interet -->
-            <!-- double check min/max values avec prof -->
-            <div class="field is-horizontal sectionInput">
-                <div class="field-label titreInput">
-                    <label class="label labelColor">Taux d'intérêt</label>
-                </div>
-                <div class="field-body bodyInput">
-                    <div class="field">
-                        <div class="control">
-                            <input class="input" type="number" placeholder="0.00%" min="0" max="100">
+                <!-- Entrée de la durée du prêt -->
+                <!-- mettre id pour récuppérer avec js et calculer les intérêts totaux -->
+                <div class="field is-horizontal sectionInput">
+                    <div class="field-label titreInput">
+                        <label class="label labelColor">Durée du prêt</label>
+                    </div>
+                    <div class="field-body bodyInput">
+                        <div class="field">
+                            <div class="control">
+                                <input class="input" type="number" placeholder="Nombre de mois" min="1">
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Entrée de la durée du prêt -->
-            <!-- mettre id pour récuppérer avec js et calculer les intérêts totaux -->
-            <div class="field is-horizontal sectionInput">
-                <div class="field-label titreInput">
-                    <label class="label labelColor">Durée du prêt</label>
-                </div>
-                <div class="field-body bodyInput">
-                    <div class="field">
-                        <div class="control">
-                            <input class="input" type="number" placeholder="Nombre de mois" min="1">
+                <!-- Input de la date de début du prêt -->
+                <!-- mettre id pour récuppérer avec js et calculer les intérêts totaux -->
+                <div class="field is-horizontal sectionInput">
+                    <div class="field-label titreInput">
+                        <label class="label labelColor">Date de début</label>
+                    </div>
+                    <div class="field-body bodyInput">
+                        <div class="field">
+                            <div class="control">
+                                <input class="input" type="date">
+                            </div>
                         </div>
                     </div>
                 </div>
+                <button class="button is-primary">Enregister le prêt</button>
             </div>
 
-            <!-- Input de la date de début du prêt -->
-            <!-- mettre id pour récuppérer avec js et calculer les intérêts totaux -->
-            <div class="field is-horizontal sectionInput">
-                <div class="field-label titreInput">
-                    <label class="label labelColor">Date de début</label>
-                </div>
-                <div class="field-body bodyInput">
-                    <div class="field">
-                        <div class="control">
-                            <input class="input" type="date">
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <button class="button is-primary">Enregister le prêt</button>
+
+            <!-- Calcule automatiquement intérêts cumulés, solde restant, statut (ACTIF, REMBOURSÉ, EN RETARD).-->
         </div>
-
-
-        <!-- Calcule automatiquement intérêts cumulés, solde restant, statut (ACTIF, REMBOURSÉ, EN RETARD).-->
-
+        <div class="partieDroite">
+            <div class="tableau"></div>
+            <div class="selection"></div>
+        </div>
 
     </main>
 </body>

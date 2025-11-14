@@ -34,97 +34,125 @@
                 </ul>
             </aside>
         </div>
-        <div class="formulairePrets">
-            <!-- Titre qui indique l'ajout d'un nouveau client-->
-            <h1 class="title">Créer un nouveau client</h1>
-            <!-- Entrée du nom du nouveau client -->
-            <div class="field is-horizontal">
-                <div class="field-label">
-                    <label class="label labelColor">Nom</label>
-                </div>
-                <div class="field-body">
-                    <div class="field">
-                        <div class="control has-icons-left">
-                            <input class="input" type="text" placeholder="Entrez le nom du nouveau client" required>
-                            <span class="icon is-normal is-left">
-                                <i class="fa-solid fa-user"></i>
-                            </span>
+        <div class="partieGauche">
+            <div class="formulaire">
+                <!-- Titre qui indique l'ajout d'un nouveau client-->
+                <h1 class="title">Créer un nouveau client</h1>
+                <!-- Entrée du nom du nouveau client -->
+                <div class="field is-horizontal">
+                    <div class="field-label titreInput">
+                        <label class="label labelColor">Nom</label>
+                    </div>
+                    <div class="field-body bodyInput">
+                        <div class="field">
+                            <div class="control has-icons-left">
+                                <input class="input" type="text" placeholder="Nom du nouveau client" required>
+                                <span class="icon is-normal is-left">
+                                    <i class="fa-solid fa-person-circle-plus"></i>
+                                </span>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Entrée du prénom du nouveau client -->
-            <div class="field is-horizontal">
-                <div class="field-label">
-                    <label class="label labelColor">Prénom</label>
-                </div>
-                <div class="field-body">
-                    <div class="field">
-                        <div class="control has-icons-left">
-                            <input class="input" type="text" placeholder="Entrez le prénom du nouveau client" required>
-                            <span class="icon is-normal is-left">
-                                <i class="fa-solid fa-user"></i>
-                            </span>
+                <!-- Entrée du prénom du nouveau client -->
+                <div class="field is-horizontal">
+                    <div class="field-label titreInput">
+                        <label class="label labelColor">Prénom</label>
+                    </div>
+                    <div class="field-body bodyInput">
+                        <div class="field">
+                            <div class="control has-icons-left">
+                                <input class="input" type="text" placeholder="Prénom du nouveau client" required>
+                                <span class="icon is-normal is-left">
+                                    <i class="fa-solid fa-user"></i>
+                                </span>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Entrée du téléphone du nouveau client -->
-            <div class="field is-horizontal">
-                <div class="field-label">
-                    <label class="label labelColor">Téléphone</label>
-                </div>
-                <div class="field-body">
-                    <div class="field">
-                        <div class="control has-icons-left">
-                            <input class="input" type="tel"
-                                placeholder="Entrez le numéro de téléphone du nouveau client" required>
-                            <span class="icon is-normal is-left">
-                                <i class="fa-solid fa-phone"></i>
-                            </span>
+                <!-- Entrée du téléphone du nouveau client -->
+                <div class="field is-horizontal">
+                    <div class="field-label titreInput">
+                        <label class="label labelColor">Téléphone</label>
+                    </div>
+                    <div class="field-body bodyInput">
+                        <div class="field">
+                            <div class="control has-icons-left">
+                                <input class="input" type="tel" placeholder="Téléphone du nouveau client" required>
+                                <span class="icon is-normal is-left">
+                                    <i class="fa-solid fa-phone"></i>
+                                </span>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Entrée de l'email du nouveau client -->
-            <div class="field is-horizontal">
-                <div class="field-label">
-                    <label class="label labelColor">Email</label>
-                </div>
-                <div class="field-body">
-                    <div class="field">
-                        <div class="control has-icons-left">
-                            <input class="input" type="text" placeholder="Entrez le nom du nouveau client" required>
-                            <span class="icon is-normal is-left">
-                                <i class="fa-solid fa-envelope"></i>
-                            </span>
+                <!-- Entrée de l'email du nouveau client -->
+                <div class="field is-horizontal">
+                    <div class="field-label titreInput">
+                        <label class="label labelColor">Email</label>
+                    </div>
+                    <div class="field-body bodyInput">
+                        <div class="field">
+                            <div class="control has-icons-left">
+                                <input class="input" type="text" placeholder="Email du nouveau client" required>
+                                <span class="icon is-normal is-left">
+                                    <i class="fa-solid fa-envelope"></i>
+                                </span>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Input de la date de début du prêt -->
-            <!-- mettre id pour récuppérer avec js et calculer les intérêts totaux -->
-            <div class="field is-horizontal">
-                <div class="field-label">
-                    <label class="label labelColor">Date de début</label>
-                </div>
-                <div class="field-body">
-                    <div class="field">
-                        <div class="control">
-                            <input class="input" type="date">
+                <!-- Entrée de l'adresse du nouveau client -->
+                <div class="field is-horizontal">
+                    <div class="field-label titreInput">
+                        <label class="label labelColor">Adresse</label>
+                    </div>
+                    <div class="field-body bodyInput">
+                        <div class="field">
+                            <div class="control has-icons-left">
+                                <input class="input" type="text" placeholder="Adresse du nouveau client" required>
+                                <span class="icon is-normal is-left">
+                                    <i class="fa-solid fa-house"></i>
+                                </span>
+                            </div>
                         </div>
                     </div>
+                </div>
+                <button class="button is-primary">Enregister le nouveau client</button>
+            </div>
+        </div>
+        <div class="partieDroite">
+            <!--Tableau qui liste les clients-->
+            <div class="tableau">
+                <h1 class="title">Liste des clients</h1>
+
+                <table class="table">
+                    <tr>
+                        <th>Nom du client</th>
+                        <th>Nb prêts actifs</th>
+                        <th>Montant dû</th>
+                        <th>Sélectionner</th>
+                    </tr>
+                    <tr>
+                        <td id="nomClient">Alek</td>
+                        <td id="nbPrets">235</td>
+                        <td id="montantDu">2.50</td>
+                        <td>
+                            <button id="bouttonDetails" class="button">Plus de détails</button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="selection">
+                <div class="card">
+
                 </div>
             </div>
         </div>
-
-
-        <!-- Calcule automatiquement intérêts cumulés, solde restant, statut (ACTIF, REMBOURSÉ, EN RETARD).-->
-
 
     </main>
 </body>
