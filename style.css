@@ -41,3 +41,19 @@ main {
 .labelColor{
     color: black;
 }
+
+.sectionInput{
+    display: flex;
+    align-items: center;
+}
+
+.titreInput {
+    text-align: center;
+    width: 5em;
+    flex: none;
+    
+}
+
+.bodyInput {
+    width: 15em;
+}
