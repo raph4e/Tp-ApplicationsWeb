@@ -32,15 +32,22 @@ main {
     width: 20%;
     height: 100%;
     display: flex;
-    justify-content: center;
+    justify-content: left;
     background-color: aqua;
     border-right: solid 0.3em black;
 }
 
 .lien-sidebar {
-    margin: 2em;
+    margin-left: 1.5em;
+    margin-top: 2.3em;
+    width: 180%;
+    font-size: 1.2em;
 }
 
+.menu-logo {
+    margin-left: 25%;
+    margin-top: 2.5em;
+}
 /* Partie pour l'ajout de nouveaux prêts, clients, paiements, etc... */
 .formulaire {
     display: flex;
