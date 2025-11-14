@@ -60,6 +60,13 @@ main {
     align-items: center;
 }
 
+/* pour enlever l'icone de calendrier du input type date*/
+input[type="date"]::-webkit-inner-spin-button,
+input[type="date"]::-webkit-calendar-picker-indicator {
+    display: none;
+    -webkit-appearance: none;
+}
+
 .titreInput {
     text-align: center;
     width: 5em;
