@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BES Loan | Prêts</title>
+    <title class="fa-solid fa-blog"></title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
     <link rel="stylesheet" href="https://bulma.io/vendor/fontawesome-free-6.5.2-web/css/all.min.css">
     <link rel="stylesheet" href="style.css">
@@ -142,19 +142,28 @@
                         <td id="nbPrets">235</td>
                         <td id="montantDu">2.50</td>
                         <td>
-                            <button id="bouttonDetails" class="button">Plus de détails</button>
+                            <button id="boutonDetails" class="button">Modifier/Supprimer</button>
                         </td>
                     </tr>
                 </table>
             </div>
-            <div class="selection">
-                <div class="card">
-
+            <div class="selection" id="selection">
+                <div class="card"> 
+                    <p class="title is-4">Nom : </p>
+                    <p class="title is-4">Prenom : </p>
+                    <p class="title is-4">Téléphone : </p>
+                    <p class="title is-4">Email : </p>
+                    <p class="title is-4">Adresse : </p>
+                    <footer class="card-footer">
+                        <button class="button card-footer-item" id="boutonModifier">Modifier</button>
+                        <button class="button card-footer-item" id="boutonSupprimer">Supprimer</button>
+                    </footer>
                 </div>
+                
             </div>
         </div>
 
     </main>
 </body>
-
+    <script src="clients.js"></script>
 </html>
