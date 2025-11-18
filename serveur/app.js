@@ -40,3 +40,67 @@ createTable().then(() => {
     /* On quitte le processus avec un code d'erreur */
     process.exit(1);
 });
+
+app.post('/addClient', async (req, res) => {
+    try {
+
+        /* Récupère les infos du client a créé */
+        const {nom, prénom, email, numéroDeTéléphone, adresse} = req.body;
+
+        /* Ici pas besoin de vérifier que chaque champ de la requête a été bien rempli, puisque que les champs du formulaire sont 'required' */
+
+        /* Les store dans une variable */
+        const client = {
+            id: crypto.randomUUID(),
+            nom: nom,
+            prénom: prénom,
+            email: email,
+            numéroDeTéléphone: numéroDeTéléphone,
+            adresse: adresse
+        };
+
+        /* Ajoute le client à la base de données */
+        await db('client').insert(client);
+
+        /* Indique que le client a bel et bien été ajouté à la base de données */
+        res.status(200).json(client);
+
+    } catch (error) {
+
+        /* En cas d'erreur lors de la création de la table, on l'affiche dans la console */
+        console.error("Erreur lors de l'ajout du client :", error);
+
+        /* Affiche une erreur 500 */
+        res.status(500).json("Erreur lors de l'ajout du client à la base de données : " , error);
+    }
+})
+
+app.put('/editClient', async (req, res) => {
+    try {
+
+        /* Récupère les infos du client à modifié */
+        const {id} = req.params;
+        const {nom, prénom, email, numéroDeTéléphone, adresse} = req.body;
+
+        /* Les store dans une variable */
+        const client = {
+            id: id,
+            nom: nom,
+            prénom: prénom,
+            email: email,
+            numéroDeTéléphone: numéroDeTéléphone,
+            adresse: adresse
+        };
+
+        /* Modifie le client dans la base de données */
+        await db('client')
+
+    } catch (error) {
+
+        /* En cas d'erreur lors de la création de la table, on l'affiche dans la console */
+        console.error("Erreur lors de la modification du client :", error);
+
+        /* Affiche une erreur 500 */
+        res.status(500).json("Erreur lors de la modification du client : " , error);
+    }
+})

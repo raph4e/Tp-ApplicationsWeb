@@ -19,7 +19,7 @@ async function createTable() {
     /* Si la table n'existe pas, on la crée */
     if (!exist) {
         await db.schema.createTable("clients", (table) => {
-            table.string("id").primary();
+            table.increments("id").primary();
             table.string("nom").notNullable();
             table.string("prénom").notNullable();
             table.string("email").notNullable();
