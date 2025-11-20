@@ -6,7 +6,7 @@ const db = knex({
     client: 'sqlite3',
     /* Indique le nom du fichier dont on souhaite connecter la base de données */
     connection: { 
-        filename: "./TP-APPLICATIONSWEB/serveur.sqlite3"       
+        filename: "./TP-APPLICATIONSWEB/serveur/db.sqlite3"       
     },
     /* Utiliser la valeur null comme valeur par défaut */
     useNullAsDefault: true
@@ -15,7 +15,7 @@ const db = knex({
 /* Fonction qui vérifie si la table clients existe, et la créé si ce n'est pas le cas */
 async function createTable() {
     const exist = await db.schema.hasTable("clients");
-
+    const pretsExist = await db.schema.hasTable("prets")
     /* Si la table n'existe pas, on la crée */
     if (!exist) {
         await db.schema.createTable("clients", (table) => {
@@ -28,6 +28,18 @@ async function createTable() {
             table.timestamp("create_at").defaultTo(db.fn.now());
         });
         console.log("Table 'clients' créée !");
+    }
+    if (!pretsExist) {
+        await db.schema.createTable("prets", (table)=> {
+            table.uuid("idPret").primary()
+            table.integer("idClient").notNullable()
+            table.foreign("idClient").references("clients.id")
+            table.decimal("montant", 6, 2).notNullable()
+            table.decimal("interet", 6, 2).notNullable()
+            table.integer("duree").notNullable()
+            table.date("dateDebut").notNullable()
+        })
+        console.log("Table 'prets' créée!")
     }
 }
 

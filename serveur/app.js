@@ -1,5 +1,5 @@
 /* Fichier app.js : point d'entrée du serveur */
-const express  = require('express');
+const express = require('express');
 
 /* Path permet de gérer les chemins de fichiers */
 const path = require('path');
@@ -20,7 +20,7 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, '../client')));
 
 /* Joint le chemin jusqu'à dashboard.html */
-app.get('/', (req, res)=> {
+app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, "../client", "dashboard.html"));
 });
 
@@ -45,7 +45,7 @@ app.post('/addClient', async (req, res) => {
     try {
 
         /* Récupère les infos du client a créé */
-        const {nom, prénom, email, numéroDeTéléphone, adresse} = req.body;
+        const { nom, prénom, email, numéroDeTéléphone, adresse } = req.body;
 
         /* Ici pas besoin de vérifier que chaque champ de la requête a été bien rempli, puisque que les champs du formulaire sont 'required' */
 
@@ -71,7 +71,7 @@ app.post('/addClient', async (req, res) => {
         console.error("Erreur lors de l'ajout du client :", error);
 
         /* Affiche une erreur 500 */
-        res.status(500).json("Erreur lors de l'ajout du client à la base de données : " , error);
+        res.status(500).json("Erreur lors de l'ajout du client à la base de données : ", error);
     }
 })
 
@@ -79,8 +79,8 @@ app.put('/editClient', async (req, res) => {
     try {
 
         /* Récupère les infos du client à modifié */
-        const {id} = req.params;
-        const {nom, prénom, email, numéroDeTéléphone, adresse} = req.body;
+        const { id } = req.params;
+        const { nom, prénom, email, numéroDeTéléphone, adresse } = req.body;
 
         /* Les store dans une variable */
         const client = {
@@ -101,6 +101,17 @@ app.put('/editClient', async (req, res) => {
         console.error("Erreur lors de la modification du client :", error);
 
         /* Affiche une erreur 500 */
-        res.status(500).json("Erreur lors de la modification du client : " , error);
+        res.status(500).json("Erreur lors de la modification du client : ", error);
+    }
+})
+
+app.get('/getPrets', async (req, res) => {
+    try {
+        const resultat = await db("prets").select("*").orderby("idClient", "desc")
+        res.status(200).json(resultat)
+    }
+    catch (err) {
+        console.error("Erreur /getPrets", err)
+        res.status(500).json({ error: "Erreur serveur." })
     }
 })

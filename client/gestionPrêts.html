@@ -12,6 +12,7 @@
 
 <body>
     <main>
+        <!--Sidebar-->
         <div class="sidebar">
             <aside class="menu">
                 <p class="menu-label menu-logo">
@@ -20,17 +21,17 @@
                 <ul class="menu-list">
                     <div class="lien-sidebar">
                         <li>
-                            <a href="gestionClients.html" class="button">Clients</a>
+                            <a href="gestionClients.html" class="button bouttonSideBar">Clients</a>
                         </li>
                     </div>
                     <div class="lien-sidebar">
                         <li>
-                            <a href="gestionPrêts.html" class="button">Prêts</a>
+                            <a href="gestionPrêts.html" class="button bouttonSideBar">Prêts</a>
                         </li>
                     </div>
                     <div class="lien-sidebar">
                         <li>
-                            <a href="gestionPaiements.html" class="button">Paiements</a>
+                            <a href="gestionPaiements.html" class="button bouttonSideBar">Paiements</a>
                         </li>
                     </div>
                 </ul>
@@ -40,7 +41,7 @@
             <!-- Sélection du client avec un drop down menu, à changer pour mettre les vrais clients via BD-->
             <div class="formulaire">
                 <!-- Titre qui indique l'ajout d'un nouveau prêt-->
-                <h1 class="title">Enregistrer un nouveau prêt</h1>            
+                <h1 class="title titleColor">Enregistrer un nouveau prêt</h1>            
                 <div class="field is-horizontal sectionInput">
                     <div class="field-label titreInput">
                         <label class="label labelColor">Client</label>
@@ -48,7 +49,7 @@
                     <div class="field-body bodyInput">
                         <div class="field">
                             <div class="control has-icons-left">
-                                <div class="select">
+                                <div class="select" id="selectDropDownMenuNomsClients">
                                     <select>
                                         <option selected>Sélectionner un client</option>
                                         <option>Client 1</option>
