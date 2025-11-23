@@ -45,22 +45,23 @@ app.post('/addClient', async (req, res) => {
     try {
 
         /* Récupère les infos du client a créé */
-        const { nom, prénom, email, numéroDeTéléphone, adresse } = req.body;
+        const { nom, prenom, email, numeroDeTelephone, adresse } = req.body;
 
         /* Ici pas besoin de vérifier que chaque champ de la requête a été bien rempli, puisque que les champs du formulaire sont 'required' */
 
         /* Les store dans une variable */
         const client = {
-            id: crypto.randomUUID(),
             nom: nom,
-            prénom: prénom,
+            prenom: prenom,
             email: email,
-            numéroDeTéléphone: numéroDeTéléphone,
-            adresse: adresse
+            numeroDeTelephone: numeroDeTelephone,
+            adresse: adresse,
+            nombreDePrets: 0,
+            montantDu: 0
         };
 
         /* Ajoute le client à la base de données */
-        await db('client').insert(client);
+        await db('clients').insert(client);
 
         /* Indique que le client a bel et bien été ajouté à la base de données */
         res.status(200).json(client);
@@ -75,25 +76,29 @@ app.post('/addClient', async (req, res) => {
     }
 })
 
-app.put('/editClient', async (req, res) => {
+app.put('/editClient/:id', async (req, res) => {
     try {
 
         /* Récupère les infos du client à modifié */
         const { id } = req.params;
-        const { nom, prénom, email, numéroDeTéléphone, adresse } = req.body;
+        const { nom, prenom, email, numeroDeTelephone, adresse } = req.body;
 
         /* Les store dans une variable */
         const client = {
             id: id,
             nom: nom,
-            prénom: prénom,
+            prenom: prenom,
             email: email,
-            numéroDeTéléphone: numéroDeTéléphone,
+            numeroDeTelephone: numeroDeTelephone,
             adresse: adresse
         };
 
         /* Modifie le client dans la base de données */
-        await db('client')
+        await db('clients').where({ id }).update(client)
+
+        /* Renvoie le client modifé au front-end, pour éviter toutes erreurs */
+        const clientModifie = await db('clients').where({ id }).first();
+        res.status(200).json(clientModifie);
 
     } catch (error) {
 
@@ -105,6 +110,51 @@ app.put('/editClient', async (req, res) => {
     }
 })
 
+/* Requête qui permet de récupérer tout les clients */
+app.get('/getClients', async (req, res) => {
+    try {
+        
+        /* Récupère tous les clients dans la base de données */
+        const clients = await db('clients').select("*");
+            
+        /* Renvoie les produits au client */
+        res.status(200).json(clients);
+
+    } catch (error) {
+        
+        /* En cas d'erreur, on l'affiche dans la console et on renvoie un code 500 a l'utilisateur */
+        console.error("Erreur lors de la récupération des clients :", error);
+
+        /* Renvoie une réponse a l'utilisateur avec un code 500 */
+        res.status(500).json({ error: "Erreur serveur" });
+    }
+});
+
+/* Requête qui permet de supprimer un client dans la base de données */
+app.delete('/deleteClient/:id', async (req, res) => {
+    try {
+        const {id} = req.params;
+
+        /* Récupère le client avant suppression */
+        const client = await db('clients').where({ id }).first();
+
+        /* Supprime le client de la base de données*/
+        await db('clients').where({ id }).del();
+
+        /* Renvoie le client supprimé */
+        res.status(200).json({ deletedClient: client });
+        
+    } catch (error) {
+
+        /* En cas d'erreur, on l'affiche dans la console et on renvoie un code 500 à l'utilisateur */
+        console.error("Erreur lors de la suppression du client:", error);
+
+        /* Renvoie une réponse à l'utilisateur avec un code 500 */
+        res.status(500).json({ error: "Erreur serveur" });
+    }
+});
+
+/* Requête permettant de récupérer tout les prêts */
 app.get('/getPrets', async (req, res) => {
     try {
         const resultat = await db("prets").select("*").orderby("idClient", "desc")

@@ -51,6 +51,7 @@ main {
     margin-left: 25%;
     margin-top: 2.5em;
 }
+
 /* Partie pour l'ajout de nouveaux prêts, clients, paiements, etc... */
 .formulaire {
     display: flex;
@@ -60,6 +61,13 @@ main {
     flex-direction: column;
     margin-top: 1.5em;
 }
+
+#formClient {
+    margin: 0;
+    padding: 0;
+    display: contents; /* fait en sorte que le form « disparaisse » pour le layout */
+}
+
 
 .labelColor{
     color: black;
@@ -73,6 +81,24 @@ main {
     display: flex;
     align-items: center;
 }
+
+.div-message-confirmation {
+    width: 100%; 
+    padding: 0.5em;
+    margin-top: 1em;
+    border-radius: 5px;
+    color: white;
+    text-align: center;
+}
+
+.message-confirmation {
+    color: black;
+}
+
+form button.button {
+    width: 100%;
+}
+
 
 /* pour enlever l'icone de calendrier du input type date*/
 input[type="date"]::-webkit-inner-spin-button,
@@ -105,7 +131,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     gap: 1.5em;
     padding: 1.1em;
     flex-direction: column;
-    border-bottom: solid 0.3em black;
     border-radius: 2px;
 }
 
@@ -123,4 +148,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     height: 75%;
     padding: 2em;
 }
+
+
 

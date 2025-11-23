@@ -6,7 +6,7 @@ const db = knex({
     client: 'sqlite3',
     /* Indique le nom du fichier dont on souhaite connecter la base de données */
     connection: { 
-        filename: "./TP-APPLICATIONSWEB/serveur/db.sqlite3"       
+        filename: "/Users/raphaellemieux/Tp-ApplicationsWeb/Tp-ApplicationsWeb-1/serveur/db.sqlite3"       
     },
     /* Utiliser la valeur null comme valeur par défaut */
     useNullAsDefault: true
@@ -21,10 +21,12 @@ async function createTable() {
         await db.schema.createTable("clients", (table) => {
             table.increments("id").primary();
             table.string("nom").notNullable();
-            table.string("prénom").notNullable();
+            table.string("prenom").notNullable();
             table.string("email").notNullable();
-            table.int("numéroDeTéléphone").notNullable();
+            table.integer("numeroDeTelephone").notNullable();
             table.string("adresse").notNullable();
+            table.integer("nombreDePrets").defaultTo(0);
+            table.integer("montantDu").defaultTo(0);
             table.timestamp("create_at").defaultTo(db.fn.now());
         });
         console.log("Table 'clients' créée !");
