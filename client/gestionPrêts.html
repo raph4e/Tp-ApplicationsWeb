@@ -39,7 +39,7 @@
         </div>
         <div class="partieGauche">
             <!-- Sélection du client avec un drop down menu, à changer pour mettre les vrais clients via BD-->
-            <div class="formulaire">
+            <div class="formulaire" id="form">
                 <!-- Titre qui indique l'ajout d'un nouveau prêt-->
                 <h1 class="title titleColor">Enregistrer un nouveau prêt</h1>
                 <div class="field is-horizontal sectionInput">
@@ -74,7 +74,7 @@
                     <div class="field-body bodyInput">
                         <div class="field">
                             <div class="control has-icons-left">
-                                <input id="montantPret" class="input" type="number" placeholder="$0.00" min="0">
+                                <input id="montantPret" class="input" type="number" placeholder="$0.00" min="50">
                                 <span class="icon is-normal is-left">
                                     <i class="fa-solid fa-dollar-sign"></i>
                                 </span>
@@ -136,7 +136,7 @@
                         </div>
                     </div>
                 </div>
-                <button class="button is-primary">Enregister le prêt</button>
+                <button class="button is-primary" id="savePret">Enregister le prêt</button>
             </div>
 
 

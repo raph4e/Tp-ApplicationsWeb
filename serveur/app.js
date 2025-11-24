@@ -12,6 +12,7 @@ const app = express();
 
 /* Importe le package crypto pour générer des identifiants uniques */
 const crypto = require('crypto');
+const { error } = require('console');
 
 /* Permet au serveur de traiter des données au format Json */
 app.use(express.json());
@@ -177,9 +178,52 @@ app.get('/getNomsClients', async (req, res) => {
     }
 })
 
-app.put('/addPret', async (req, res) => {
+app.POST('/addPret', async (req, res) => {
     try {
-        const {idClient, montantPret, interet, duree, dateDebut } = req.body
-        const resultat = await db("")
+        const { idClient, montantPret, interet, duree, dateDebut } = req.body
+        const numPret = Number(montantPret)
+        const numInteret = Number(interet)
+        const numDuree = Number(duree)
+        const date_dateDebut = Date(dateDebut)
+        // checks pour voir si un des champs est vide
+        if (!idClient) {
+            return res.status(400).json({ error: "Champ 'idClient' non rempli" })
+        }
+        if (!numPret) {
+            return res.status(400).json({ error: "Champ 'montantPret' non rempli" })
+        }
+        if (!numInteret) {
+            return res.status(400).json({ error: "Champ 'interet' non rempli" })
+        }
+        if (!numDuree) {
+            return res.status(400).json({ error: "Champ 'duree' non rempli" })
+        }
+        if (!date_dateDebut) {
+            return res.status(400).json({ error: "Champ 'dateDebut' non rempli" })
+        }
+        if (numDuree < 1) {
+            return res.status(400).json({ error: "'duree' doit être supérieur à 1" })
+        }
+        if (numInteret < 0) {
+            return res.status(400).json({ error: "'interet' doit être supérieur à 0" })
+        }
+        if (numPret < 50) {
+            return res.status(400).json({ error: "'montantPret' doit être supérieur à 50" })
+        }
+
+        const pret = {
+            idClient: idClient,
+            montant: numPret,
+            interet: numInteret,
+            duree: numDuree,
+            dateDebut: date_dateDebut
+        }
+
+        const resultat = await db("prets").insert(pret)
+        res.status(201).json(pret)
+    }
+    catch (err) {
+        console.error("Erreur /addPret", err);
+        res.status(500).json({ error: "Erreur serveur" })
     }
 })

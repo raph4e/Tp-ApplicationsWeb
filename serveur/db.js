@@ -4,9 +4,9 @@ const knex = require('knex')
 /* Créer une instance de base de données */
 const db = knex({
     client: 'sqlite3',
-    /* Indique le nom du fichier dont on souhaite connecter la base de données */
+    /* Indique le nom du fichier (CHEMIN RELATIF) dont on souhaite connecter la base de données */
     connection: { 
-        filename: "/Users/raphaellemieux/Tp-ApplicationsWeb/Tp-ApplicationsWeb-1/serveur/db.sqlite3"       
+        filename: "./db.sqlite3"       
     },
     /* Utiliser la valeur null comme valeur par défaut */
     useNullAsDefault: true
@@ -33,7 +33,7 @@ async function createTable() {
     }
     if (!pretsExist) {
         await db.schema.createTable("prets", (table)=> {
-            table.uuid("idPret").primary()
+            table.uuid("idPret").primary().defaultTo(knex.raw('UUID()'))
             table.integer("idClient").notNullable()
             table.foreign("idClient").references("clients.id")
             table.decimal("montant", 6, 2).notNullable()
