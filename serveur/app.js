@@ -113,15 +113,15 @@ app.put('/editClient/:id', async (req, res) => {
 /* Requête qui permet de récupérer tout les clients */
 app.get('/getClients', async (req, res) => {
     try {
-        
+
         /* Récupère tous les clients dans la base de données */
         const clients = await db('clients').select("*");
-            
+
         /* Renvoie les produits au client */
         res.status(200).json(clients);
 
     } catch (error) {
-        
+
         /* En cas d'erreur, on l'affiche dans la console et on renvoie un code 500 a l'utilisateur */
         console.error("Erreur lors de la récupération des clients :", error);
 
@@ -133,7 +133,7 @@ app.get('/getClients', async (req, res) => {
 /* Requête qui permet de supprimer un client dans la base de données */
 app.delete('/deleteClient/:id', async (req, res) => {
     try {
-        const {id} = req.params;
+        const { id } = req.params;
 
         /* Récupère le client avant suppression */
         const client = await db('clients').where({ id }).first();
@@ -143,7 +143,7 @@ app.delete('/deleteClient/:id', async (req, res) => {
 
         /* Renvoie le client supprimé */
         res.status(200).json({ deletedClient: client });
-        
+
     } catch (error) {
 
         /* En cas d'erreur, on l'affiche dans la console et on renvoie un code 500 à l'utilisateur */
@@ -163,5 +163,23 @@ app.get('/getPrets', async (req, res) => {
     catch (err) {
         console.error("Erreur /getPrets", err)
         res.status(500).json({ error: "Erreur serveur." })
+    }
+})
+
+app.get('/getNomsClients', async (req, res) => {
+    try {
+        const resultat = await db("clients").select("prenom, nom").orderby("prenom")
+        res.status(200).json(resultat)
+    }
+    catch (err) {
+        console.error("Erreur /getNomsClients", err)
+        res.status(500).json({ error: "Erreur serveur" })
+    }
+})
+
+app.put('/addPret', async (req, res) => {
+    try {
+        const {idClient, montantPret, interet, duree, dateDebut } = req.body
+        const resultat = await db("")
     }
 })
