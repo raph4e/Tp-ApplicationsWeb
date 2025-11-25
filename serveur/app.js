@@ -182,6 +182,7 @@ app.get('/getPrets', async (req, res) => {
     }
 })
 
+
 app.get('/getNomsClients', async (req, res) => {
     try {
         const resultat = await db("clients").select("prenom, nom").orderby("prenom")

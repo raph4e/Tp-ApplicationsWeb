@@ -265,3 +265,27 @@ formClient.addEventListener("submit", async (e)=> {
     }
 });
 
+/* Script pour filtrer */
+/* D'abord, on récupère les éléments */
+const nomFiltrer = document.getElementById("nomFiltrer")
+const buttonRechercheParNom = document.getElementById("buttonRechercheParNom")
+const messageErreurFiltrer = document.getElementById("messageErreurFiltrer")
+
+buttonRechercheParNom.addEventListener("click", (e)=> {
+
+    e.preventDefault();
+    if (buttonRechercheParNom.textContent = "Rechercher") {
+        if (nomFiltrer.value === "") {
+            messageErreurFiltrer.innerHTML = `
+                <span>Aucun nom entré. Veuillez entrer le nom du client à rechercher.</span>
+            `
+        } else {
+            clients = clients.filter((client) => client.nom == nomFiltrer.value);
+            remplirTableau();
+            buttonRechercheParNom.textContent = "Réinitialiser la liste"
+        }
+    } else {
+        loadClients();
+        buttonRechercheParNom.textContent = "Rechercher"
+    }
+})

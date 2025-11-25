@@ -38,7 +38,7 @@
             </aside>
         </div>
         <div class="partieGauche">
-            <div class="box formulaire">
+            <div class="formulaire">
 
                 <!-- Titre qui indique l'ajout d'un nouveau client-->
                 <h1 class="title titleColor">Créer un nouveau client</h1>
@@ -143,6 +143,41 @@
             </div>
         </div>
         <div class="partieDroite">
+            <!--Filtres-->
+            <div class="filtrer box">
+                <h1 class="title titleColor">Filtrer</h1>
+                <div class="rechercheParNom">
+                    <form action="">
+                        <label for="" class="label labelColor">Filtrer par nom</label>
+                        <input class="input" type="text" placeholder="Nom du client recherché" id="nomFiltrer" required>
+                        <button type="submit" class="button is-primary" id="buttonRechercheParNom" style="margin-top: 0.8em;">Rechercher</button>
+                    </form>
+                    <div id="messageErreurFiltrer"></div>
+                </div>
+            </div>
+            <div class="trier box">
+                <h1 class="title titleColor">Trier</h1>
+                <div class="checkboxes">
+                    <label class="checkbox">
+                        <input type="radio" name="trier" id="PlusHautMontantDu" value="PlusHautMontantDu"/>
+                        Le plus haut montant dû
+                    </label>
+                    <label class="checkbox">
+                        <input type="radio" name="trier" id="PlusBasMontantDu" value="PlusBasMontantDu"/>
+                        Le plus bas montant dû
+                    </label> 
+                    <label class="checkbox">
+                        <input type="radio" name="trier" id="PlusPretsActifs" value="PlusPretsActifs"/>
+                        Le plus de prêts actifs
+                    </label>
+                    <label class="checkbox">
+                        <input type="radio" name="trier" id="MoinsPretsActifs" value="MoinsPretsActifs"/>
+                        Le moins de prêts actifs 
+                    </label>                           
+                </div>
+                <button class="button is-primary" id="buttonTrier" style="margin-top: 0.8em;">Rechercher</button>
+                <div id="messageErreurTrier"></div>               
+            </div>
             <!--Tableau qui liste les clients-->
             <div class="tableau">
                 <h1 class="title titleColor">Liste des clients</h1>

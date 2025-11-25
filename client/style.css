@@ -127,7 +127,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     height: 50%;
     width: 100%;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 1.5em;
     padding: 1.1em;
     flex-direction: column;
@@ -148,6 +148,4 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     height: 75%;
     padding: 2em;
 }
-
-
 
