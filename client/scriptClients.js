@@ -225,8 +225,21 @@ formClient.addEventListener("submit", async (e)=> {
             if (!res.ok) {
                 const err = await res.text();
                 console.error("Erreur serveur :", err);
+                
+                /* Affiche au client */
+                messageConfirmation.textContent = "Une erreur est survenu, veuillez réessayer"
+
+                /* Réinitialise les champs */
+                nomClient.value = "";
+                prenomClient.value = "";
+                emailClient.value = "";
+                telephoneClient.value = "";
+                adresseClient.value = "";
+
+                /* Arrête le bloc de code */
                 return;
             };
+
 
             /* Message de confirmation */
             messageConfirmation.textContent = "Client créé avec succès!";
