@@ -271,21 +271,122 @@ const nomFiltrer = document.getElementById("nomFiltrer")
 const buttonRechercheParNom = document.getElementById("buttonRechercheParNom")
 const messageErreurFiltrer = document.getElementById("messageErreurFiltrer")
 
+/* Évenement lorsque le bouton recherche par nom est cliqué */
 buttonRechercheParNom.addEventListener("click", (e)=> {
 
+    /* Préviens le comportement par défaut du bouton */
     e.preventDefault();
-    if (buttonRechercheParNom.textContent = "Rechercher") {
+
+    /* Trouve le client correspondant au nom */
+    const clientTrouve = clients.find(c => c.nom === nomFiltrer.value);
+
+    /* S'éxécute lorsque le bouton affiche rechercher */
+    if (buttonRechercheParNom.textContent === "Rechercher") {
+        /* Vérifie si le input n'est pas vide */
         if (nomFiltrer.value === "") {
+
+            /* Affiche au client un message d'erreur si ce n'est pas le cas */
             messageErreurFiltrer.innerHTML = `
                 <span>Aucun nom entré. Veuillez entrer le nom du client à rechercher.</span>
             `
+
+        /* Vérifie si le client existe */
+        } else if (!clientTrouve) {
+
+            /* Affiche au client un message d'erreur si ce n'est pas le cas */
+            messageErreurFiltrer.innerHTML = `
+            <span>Nom du client introuvable. Veuillez réessayer</span>
+            `
+
+        /* Tout va bien, on éxécute */
         } else {
+
+            /* Vide le div message erreur */
+            messageErreurFiltrer.innerHTML = ``
+
+            /* Filtre le tableau pour garder seulement le client correspondant */
             clients = clients.filter((client) => client.nom == nomFiltrer.value);
+
+            /* Rempli le tableau côté frontend par la suite */
             remplirTableau();
+
+            /* Change la valeur du bouton */
             buttonRechercheParNom.textContent = "Réinitialiser la liste"
         }
-    } else {
+
+    /* S'éxécute lorsque le bouton affiche réinitialiser la liste */
+    } else if (buttonRechercheParNom.textContent === "Réinitialiser la liste") {
+
+        /* Réinitialise le tableau et la liste frontend */
         loadClients();
+
+        /* Change la valeur du bouton */
         buttonRechercheParNom.textContent = "Rechercher"
+
+        /* Réinitialise le input */
+        nomFiltrer.value = ""
     }
 })
+
+/* Script pour trier */
+/* D'abord, on récupère les éléments */
+const PlusHautMontantDu = document.getElementById("PlusHautMontantDu")
+const PlusBasMontantDu = document.getElementById("PlusBasMontantDu")
+const PlusPretsActifs = document.getElementById("PlusPretsActifs")
+const MoinsPretsActifs = document.getElementById("MoinsPretsActifs")
+const buttonTrier = document.getElementById("buttonTrier")
+const messageErreurTrier = document.getElementById("buttonTrier")
+
+buttonTrier.addEventListener("click", ()=> {
+
+    /* S'éxécute lorsque le bouton affiche rechercher */
+    if (buttonTrier.textContent === "Rechercher") {
+
+        /* Change la valeur du bouton */
+        buttonTrier.textContent = "Réinitialiser la liste"
+
+        if (PlusHautMontantDu.checked) {
+            
+            /* Filtre le tableau pour que le plus haut montant dû soit en haut et le reste en ordre */
+            clients.sort((a, b) => b.montantDu - a.montantDu);
+
+
+            /* Rempli le tableau côté frontend par la suite */       
+            remplirTableau();
+
+        }  else if (PlusBasMontantDu.checked) {
+
+            /* Filtre le tableau pour que le plus bas montant dû soit en haut et le reste en ordre */
+            clients.sort((a, b) => a.montantDu - b.montantDu);
+
+            /* Rempli le tableau côté frontend par la suite */
+            remplirTableau();
+
+        } else if (PlusPretsActifs.checked) {
+
+            /* Filtre le tableau pour que le plus de prêts actifs soit en haut */
+            clients.sort((a, b) => b.nombreDePrets - a.nombreDePrets);
+
+            /* Rempli le tableau côté frontend par la suite */
+            remplirTableau();
+
+        } else if (MoinsPretsActifs.checked) {
+
+            /* Filtre le tableau pour que le plus de prêts actifs soit en haut */
+            clients.sort((a, b) => a.nombreDePrets - b.nombreDePrets);
+
+            /* Rempli le tableau côté frontend par la suite */
+            remplirTableau();
+            
+        };
+
+    /* S'éxécute lorsque le bouton affiche réinitialiser la liste */
+    } else if (buttonTrier.textContent === "Réinitialiser la liste") {
+
+        /* Réinitialise le tableau et la liste frontend */
+        loadClients();
+
+        /* Change la valeur du bouton */
+        buttonTrier.textContent = "Rechercher"
+    };
+});

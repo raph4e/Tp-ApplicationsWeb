@@ -182,7 +182,7 @@ app.get('/getPrets', async (req, res) => {
     }
 })
 
-
+/* Requête qui récupère le prenom et le nom de chaque client */
 app.get('/getNomsClients', async (req, res) => {
     try {
         const resultat = await db("clients").select("prenom, nom").orderby("prenom")
@@ -194,6 +194,7 @@ app.get('/getNomsClients', async (req, res) => {
     }
 })
 
+/* Requête qui permet d'ajouter un prêt à la base de données */
 app.post('/addPret', async (req, res) => {
     try {
         const { idClient, montantPret, interet, duree, dateDebut } = req.body

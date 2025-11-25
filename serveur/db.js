@@ -16,6 +16,7 @@ const db = knex({
 async function createTable() {
     const exist = await db.schema.hasTable("clients");
     const pretsExist = await db.schema.hasTable("prets")
+    const paiementsExist = await db.schema.hasTable("paiements")
     /* Si la table n'existe pas, on la crée */
     if (!exist) {
         await db.schema.createTable("clients", (table) => {
@@ -42,6 +43,18 @@ async function createTable() {
             table.date("dateDebut").notNullable()
         })
         console.log("Table 'prets' créée!")
+    }
+    if (!paiementsExist) {
+        await db.schema.createTable("paiements", (table) => {
+            table.increments("idPaiement").primary();
+            table.integer("idPrêt").notNullable()
+            table.foreign("idPrêt").references("prets.id")
+            table.integer("montantPaye").notNullable()
+            table.string("datePaiement").notNullable()
+            table.string("modePaiement").notNullable()
+            table.string("notePaiement").notNullable()          
+        })
+        console.log("Table 'paiements' créée! ")
     }
 }
 

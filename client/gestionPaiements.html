@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BES Loan | Paiementss</title>
+    <title>BES Loan | Paiements</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
     <link rel="stylesheet" href="https://bulma.io/vendor/fontawesome-free-6.5.2-web/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <main>
         <!--Sidebar-->
@@ -35,6 +37,112 @@
                 </ul>
             </aside>
         </div>
+        <div class="partieGauche">
+            <!-- Sélection du client avec un drop down menu, à changer pour mettre les vrais prêts via BD-->
+            <div class="formulaire" id="form">
+                <!-- Titre qui indique l'ajout d'un nouveau paiement-->
+                <h1 class="title titleColor">Enregistrer un nouveau paiement</h1>
+                <div class="field is-horizontal sectionInput">
+                    <div class="field-label titreInput">
+                        <label class="label labelColor">Prêts</label>
+                    </div>
+                    <div class="field-body bodyInput">
+                        <div class="field">
+                            <div class="control has-icons-left">
+                                <div class="select" id="selectDropDownMenuPrets">
+                                    <select>
+                                        <option selected>Sélectionner un prêt</option>
+                                        <option>prêt 1</option>
+                                        <option>prêt 2</option>
+                                        <option>prêt 3</option>
+                                    </select>
+                                    <span class="icon is-normal is-left">
+                                        <i class="fa-solid fa-file-powerpoint"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Entrée du montant payé -->
+                <div class="field is-horizontal sectionInput">
+                    <div class="field-label titreInput">
+                        <label class="label labelColor">Montant payé</label>
+                    </div>
+                    <div class="field-body bodyInput">
+                        <div class="field">
+                            <div class="control has-icons-left">
+                                <input id="montantPaye" class="input" type="number" placeholder="$0.00">
+                                <span class="icon is-normal is-left">
+                                    <i class="fa-solid fa-dollar-sign"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Entrée de la date du paiement -->
+                <div class="field is-horizontal sectionInput">
+                    <div class="field-label titreInput">
+                        <label class="label labelColor">Date du paiement</label>
+                    </div>
+                    <div class="field-body bodyInput">
+                        <div class="field">
+                            <div class="control has-icons-left">
+                                <input id="datePaiement" class="input" type="date" placeholder="Entrer une date en format xx/xx/xxxx">
+                                <span class="icon is-normal is-left">
+                                    <i class="fa-regular fa-calendar"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Entrée du mode de paiement -->
+                <div class="field is-horizontal sectionInput">
+                    <div class="field-label titreInput">
+                        <label class="label labelColor">Mode de paiement</label>
+                    </div>
+                    <div class="field-body bodyInput">
+                        <div class="field">
+                            <div class="control has-icons-left">
+                                <input id="modePaiement" class="input" type="number" placeholder="(cash, virement, carte de crédit, etc.)">
+                                <span class="icon is-normal is-left">
+                                    <i class="fa-solid fa-credit-card"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Entrée de la note du paiement -->
+                <div class="field is-horizontal sectionInput">
+                    <div class="field-label titreInput">
+                        <label class="label labelColor">Note de paiement</label>
+                    </div>
+                    <div class="field-body bodyInput">
+                        <div class="field">
+                            <div class="control has-icons-left">
+                                <textarea id="notePaiement" class="textarea" placeholder="Entrer une note"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="button is-primary" id="savePaiement">Enregister le paiement</button>
+            </div>
+
+
+            <!-- Calcule automatiquement intérêts cumulés, solde restant, statut (ACTIF, REMBOURSÉ, EN RETARD).-->
+        </div>
+        <div class="partieDroite">
+            <div class="tableau"></div>
+            <div class="selection"></div>
+        </div>
+
     </main>
 </body>
+</main>
+<script src="scriptPrets.js"></script>
+
 </html>

@@ -1,3 +1,13 @@
+/* Empêche les modifications du mode sombre */
+html {
+    --bulma-theme: light !important;
+    color-scheme: light !important;
+}
+
+html[data-theme="dark"] {
+    --bulma-theme: light !important;
+}
+
 /* Division des sections de la page */
 html, body {
     height: 100%;
@@ -95,7 +105,7 @@ main {
     color: black;
 }
 
-form button.button {
+#formClient button.button {
     width: 100%;
 }
 
