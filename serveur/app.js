@@ -48,7 +48,22 @@ app.post('/addClient', async (req, res) => {
         /* Récupère les infos du client a créé */
         const { nom, prenom, email, numeroDeTelephone, adresse } = req.body;
 
-        /* Ici pas besoin de vérifier que chaque champ de la requête a été bien rempli, puisque que les champs du formulaire sont 'required' */
+        /* Vérifie pour voir si les champs remplis par l'utilisateur sont vides */
+        if (!nom) {
+            return res.status(400).json({ error: "Champ 'nom' du client non rempli" })
+        }
+        if (!prenom) {
+            return res.status(400).json({ error: "Champ 'prenom' du client non rempli" })
+        }
+        if (!email) {
+            return res.status(400).json({ error: "Champ 'email' du client non rempli" })
+        }
+        if ((!numeroDeTelephone) || (numeroDeTelephone.length < 10)) {
+            return res.status(400).json({ error: "Champ 'numero de téléphone' du client non rempli ou invalide" })
+        }
+        if (!adresse) {
+            return res.status(400).json({ error: "Champ 'adresse' du client non rempli" })
+        };
 
         /* Les store dans une variable */
         const client = {
@@ -107,7 +122,7 @@ app.put('/editClient/:id', async (req, res) => {
         console.error("Erreur lors de la modification du client :", error);
 
         /* Affiche une erreur 500 */
-        res.status(500).json("Erreur lors de la modification du client : ", error);
+        res.status(500).json("Erreur lors de la modification du client : ");
     }
 })
 
@@ -178,7 +193,7 @@ app.get('/getNomsClients', async (req, res) => {
     }
 })
 
-app.POST('/addPret', async (req, res) => {
+app.post('/addPret', async (req, res) => {
     try {
         const { idClient, montantPret, interet, duree, dateDebut } = req.body
         const numPret = Number(montantPret)

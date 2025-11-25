@@ -64,6 +64,9 @@ function remplirTableau() {
         rangee.querySelector('.selectionner').addEventListener("click", (e) => {
             e.preventDefault();
 
+            /* Retire le message de confirmation */
+            messageConfirmation.textContent = "";
+
             /* Assigne les valeurs dans les inputs */
             nomClient.value = c.nom;
             prenomClient.value = c.prenom;
@@ -83,19 +86,33 @@ function remplirTableau() {
             const boutonSupprimer = divBoutonSupprimer.querySelector('.bouton-supprimer');
 
             /* Fonction lorsque le bouton supprimer est cliqué */
-            boutonSupprimer.addEventListener("click", async () => {
+            boutonSupprimer.addEventListener("click", async (event) => {
+
+                /* Empêche le comportement de base du bouton */
+                event.preventDefault();
+                event.stopPropagation();
 
                 /* Supprime le client de la liste clients */
                 clients = clients.filter((client) => client.id !== c.id);
 
                 /* Appelle de la requête qui supprime le client de la base de données */
-                fetch(`/deleteClient/${c.id}`, {
+                const res = await fetch(`/deleteClient/${c.id}`, {
                     method: 'DELETE',
                     headers: { 'Content-Type': 'application/json' }
                 });
 
+                /* Envoie une erreur si le client n'a pas été supprimé correctement */
+                if (!res.ok) throw new Error("Erreur lors de la suppression"); 
+
+                /* Message de confirmation côté serveur */
+                const data = await res.json();
+                console.log("Client supprimé côté serveur: ", data.deletedClient)
+
                 /* Message de confirmation */
                 messageConfirmation.textContent = "Client supprimé avec succès!"; 
+
+                /* Change la valeur du bouton enregistrer client */
+                boutonEnregistrerClient.textContent = "Enregister le nouveau client";
 
                 /* Retire le bouton supprimer */
                 divBoutonSupprimer.innerHTML = "";
@@ -108,7 +125,12 @@ function remplirTableau() {
                 adresseClient.value = "";
 
                 /* Appel de la fonction loadClients() */                    
-                loadClients();       
+                loadClients();     
+
+                /* Vide le message de confirmation après 2 secondes */
+                setTimeout(() => {
+                    messageConfirmation.textContent = "";
+                }, 2000);
             });
         });
 
@@ -123,10 +145,10 @@ formClient.addEventListener("submit", async (e)=> {
     e.preventDefault();
 
     /* Modifie un client dans la base de données et front-end */
-    if (clientModifié) {
+    if (boutonEnregistrerClient.textContent == "Modifier et quitter la sélection") {
 
         /* Récupère la requête permettant de modifier un client */
-        fetch(`/editClient/${clientModifié.id}`, {
+        const res = await fetch(`/editClient/${clientModifié.id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -136,33 +158,50 @@ formClient.addEventListener("submit", async (e)=> {
                 numeroDeTelephone: telephoneClient.value,
                 adresse: adresseClient.value
             })
-        })
-        .then(res => res.json())
-        .then(data => {
+        });
+
+        /* Message de confirmation côté serveur */
+        let data;
+        if (res.headers.get("content-length") !== "0") {
+            data = await res.json();
+        } else {
+            data = {};
+        }
+
+        /* Indique si il y a une erreur */
+        if (!res.ok) {
+            console.error("Erreur serveur:", data);
+            return;
+        }
+
+        console.log("Client modifié côté serveur", data);
         
-            /* Messages de confirmation */
-            console.log("Client modifié côté serveur", data);
-            messageConfirmation.textContent = "Client modifié avec succès!";
+        /* Message de confirmation */
+        messageConfirmation.textContent = "Client modifié avec succès!";
              
-            /* Réinitialise la variable clientModifié */
-            clientModifié = null;
+        /* Réinitialise la variable clientModifié */
+        clientModifié = null;
 
-            /* Retire le bouton supprimer */
-            divBoutonSupprimer.innerHTML = "";
+        /* Retire le bouton supprimer */
+        divBoutonSupprimer.innerHTML = "";
 
-            /* Change la valeur du bouton enregistrer client */
-            boutonEnregistrerClient.textContent = "Enregister le nouveau client";
+        /* Change la valeur du bouton enregistrer client */
+        boutonEnregistrerClient.textContent = "Enregister le nouveau client";
 
-            /* Réinitialise les champs pour ajouter un client */
-            nomClient.value = "";
-            prenomClient.value = "";
-            emailClient.value = "";
-            telephoneClient.value = "";
-            adresseClient.value = "";
+        /* Réinitialise les champs pour ajouter un client */
+        nomClient.value = "";
+        prenomClient.value = "";
+        emailClient.value = "";
+        telephoneClient.value = "";
+        adresseClient.value = "";
             
-            /* Appel de la fonction loadClients() */
-            loadClients();
-        });       
+        /* Appel de la fonction loadClients() */
+        loadClients();
+
+        /* Vide le message de confirmation après 2 secondes */
+        setTimeout(() => {
+            messageConfirmation.textContent = "";
+        }, 2000);    
 
     } else {
 
@@ -194,6 +233,11 @@ formClient.addEventListener("submit", async (e)=> {
 
             /* Appel de la fonction loadClients() */
             loadClients();
+
+            /* Vide le message de confirmation après 2 secondes */
+            setTimeout(() => {
+                messageConfirmation.textContent = "";
+            }, 2000);
 
             /* Réinitialise les champs pour ajouter un client */
             nomClient.value = "";
