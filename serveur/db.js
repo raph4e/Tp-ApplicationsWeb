@@ -34,7 +34,7 @@ async function createTable() {
     }
     if (!pretsExist) {
         await db.schema.createTable("prets", (table)=> {
-            table.uuid("idPret").primary().defaultTo(knex.raw('UUID()'))
+            table.increments("idPret").primary()
             table.integer("idClient").notNullable()
             table.foreign("idClient").references("clients.id")
             table.decimal("montant", 6, 2).notNullable()

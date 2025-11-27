@@ -34,11 +34,28 @@ bouttonSave.addEventListener('click', async () => {
     await loadPrets()
 })
 
-
-
+async function loadClients() {
+    try {
+        const resultat = await fetch('/getNomsClients')
+        if (!resultat.ok) {
+            throw new Error("Erreur côté serveur")
+        }
+        listeNomsClients = await resultat.json()
+        listeNomsClients.forEach((client)=>{
+            const option = document.createElement('option')
+            option.textContent = `${client.prenom} ${client.nom}`
+            dropDownMenuNomClients.appendChild(option)
+        })
+    }
+    catch(err) {
+        console.error(err)
+        alert("Impossible d'afficher les clients")
+    }
+}
 
 
 
 
 
 loadPrets()
+loadClients()
