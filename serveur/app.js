@@ -160,7 +160,7 @@ app.get('/getPrets', async (req, res) => {
 /* Requête qui récupère le prenom et le nom de chaque client */
 app.get('/getNomsClients', async (req, res) => {
     try {
-        const resultat = await db("clients").select("prenom", "nom").orderBy("prenom")
+        const resultat = await db("clients").select("id", "prenom", "nom").orderBy("prenom")
         res.status(200).json(resultat)
     }
     catch (err) {

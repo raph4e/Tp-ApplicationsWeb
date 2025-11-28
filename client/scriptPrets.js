@@ -12,13 +12,22 @@ async function loadPrets() {
     clients = await res.json();
 }
 
+function clearForm() {
+    dropDownMenuNomClients.value = "0"
+    montantPret.value = ""
+    interet.value = ""
+    dureePret.value = ""
+    dateDebut.value = ""
+}
+
+// for some reason dans bd, idPret = NULL & dateDebut = la date d'aujourd'hui
+
 bouttonSave.addEventListener('click', async () => {
     const resultat = await fetch("/addPret", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-            /* ############### CHANGER POUR DONNER L'ID ASSOCIÉ AU CLIENT ############### */
-            idClient: dropDownMenuNomClients,
+            idClient: dropDownMenuNomClients.value,
             montantPret: parseFloat(montantPret.value),
             interet: parseFloat(interet.value),
             duree: parseInt(dureePret.value),
@@ -29,7 +38,7 @@ bouttonSave.addEventListener('click', async () => {
         throw new Error("Erreur du côté serveur")
     }
 
-    formulairePret.reset()
+    clearForm()
     montantPret.focus()
     await loadPrets()
 })
@@ -43,6 +52,7 @@ async function loadClients() {
         listeNomsClients = await resultat.json()
         listeNomsClients.forEach((client)=>{
             const option = document.createElement('option')
+            option.value = client.id
             option.textContent = `${client.prenom} ${client.nom}`
             dropDownMenuNomClients.appendChild(option)
         })
