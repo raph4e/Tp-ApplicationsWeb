@@ -20,8 +20,7 @@ function clearForm() {
     dateDebut.value = ""
 }
 
-// for some reason dans bd, idPret = NULL & dateDebut = la date d'aujourd'hui
-
+// ajout du pret dans la bd lorsqu'on clique enregistrer
 bouttonSave.addEventListener('click', async () => {
     const resultat = await fetch("/addPret", {
         method: "POST",
@@ -37,7 +36,7 @@ bouttonSave.addEventListener('click', async () => {
     if (!resultat.ok) {
         throw new Error("Erreur du côté serveur")
     }
-
+    // reset tous les champs et focus le montant du pret, refresh aussi tous les prets
     clearForm()
     montantPret.focus()
     await loadPrets()
