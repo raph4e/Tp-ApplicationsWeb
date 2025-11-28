@@ -135,6 +135,9 @@
                     <!-- Bouton supprimer -->
                     <div class="div-bouton-supprimer" id="divBoutonSupprimer"></div>
 
+                    <!-- Bouton quitter -->
+                    <div class="div-bouton-quitter" id="divBoutonQuitter"></div>
+
                     <!-- Message de confirmation -->
                     <div class="div-message-confirmation">
                         <p class="message-confirmation" id="messageConfirmation"></p>
@@ -143,6 +146,20 @@
             </div>
         </div>
         <div class="partieDroite">
+            <!--Tableau qui liste les clients-->
+            <div class="div-tableau box">
+                <h1 class="title titleColor">Liste des clients</h1>
+                <div class="tableau">
+                    <table class="table" id="tableauClients">
+                        <tr>
+                            <th>Nom du client</th>
+                            <th>Nb prêts actifs</th>
+                            <th>Montant dû</th>
+                            <th>Sélectionner</th>
+                        </tr>
+                    </table>
+                </div>
+            </div>
             <!--Filtres-->
             <div class="filtrer box">
                 <h1 class="title titleColor">Filtrer</h1>
@@ -177,19 +194,6 @@
                 </div>
                 <button class="button is-primary" id="buttonTrier" style="margin-top: 0.8em;">Rechercher</button>
                 <div id="messageErreurTrier"></div>               
-            </div>
-            <!--Tableau qui liste les clients-->
-            <div class="tableau">
-                <h1 class="title titleColor">Liste des clients</h1>
-
-                <table class="table" id="tableauClients">
-                    <tr>
-                        <th>Nom du client</th>
-                        <th>Nb prêts actifs</th>
-                        <th>Montant dû</th>
-                        <th>Sélectionner</th>
-                    </tr>
-                </table>
             </div>
         </div>
 

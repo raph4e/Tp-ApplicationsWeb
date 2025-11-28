@@ -176,7 +176,7 @@ app.post('/addPret', async (req, res) => {
         const numPret = Number(montantPret)
         const numInteret = Number(interet)
         const numDuree = Number(duree)
-        const date_dateDebut = Date(dateDebut)
+        const date_dateDebut = new Date(dateDebut)
         // checks pour voir si un des champs est vide
         if (!idClient) {
             return res.status(400).json({ error: "Champ 'idClient' non rempli" })
@@ -210,6 +210,16 @@ app.post('/addPret', async (req, res) => {
             duree: numDuree,
             dateDebut: date_dateDebut
         }
+
+        /* Ajoute le montant du prêt à la colonne montant dû du client */
+        await db('clients')
+        .where({ id: idClient  })
+        .increment('montantDu', numPret); 
+
+        /* Ajoute 1 à la colonne nombre de prêts du client */
+        await db('clients')
+        .where({ id: idClient  })
+        .increment('nombreDePrets', 1); 
 
         const resultat = await db("prets").insert(pret)
         res.status(201).json(pret)

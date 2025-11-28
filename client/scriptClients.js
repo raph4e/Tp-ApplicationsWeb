@@ -27,6 +27,7 @@ const emailClient = document.getElementById("email");
 const adresseClient = document.getElementById("adresse");
 const messageConfirmation = document.getElementById("messageConfirmation");
 const divBoutonSupprimer = document.getElementById("divBoutonSupprimer");
+const divBoutonQuitter = document.getElementById("divBoutonQuitter")
 
 /* Fonction permettant de remplir le tableau avec les clienst récupérés de la base de données */
 function remplirTableau() {
@@ -80,10 +81,15 @@ function remplirTableau() {
                 <button class="bouton-supprimer button is-primary">Supprimer et quitter la sélection</button>
             `;
 
+            divBoutonQuitter.innerHTML = `
+                <button class="bouton-quitter button is-primary">Quitter la sélection</button>
+            `
+
             /* Supprime un client lorsque le bouton supprimer est cliqué */
 
-            /* D'abord, on récupère le bouton */
+            /* D'abord, on récupère les boutons */
             const boutonSupprimer = divBoutonSupprimer.querySelector('.bouton-supprimer');
+            const boutonQuitter =   divBoutonQuitter.querySelector('.bouton-quitter')
 
             /* Fonction lorsque le bouton supprimer est cliqué */
             boutonSupprimer.addEventListener("click", async (event) => {
@@ -114,8 +120,9 @@ function remplirTableau() {
                 /* Change la valeur du bouton enregistrer client */
                 boutonEnregistrerClient.textContent = "Enregister le nouveau client";
 
-                /* Retire le bouton supprimer */
+                /* Retire le bouton supprimer et le bouton quitter */
                 divBoutonSupprimer.innerHTML = "";
+                divBoutonQuitter.innerHTML = "";
 
                 /* Réinitialise les champs pour ajouter un client */
                 nomClient.value = "";
@@ -132,6 +139,29 @@ function remplirTableau() {
                     messageConfirmation.textContent = "";
                 }, 2000);
             });
+
+            /* Fonction lorsque le bouton quitté est cliqué */
+            boutonQuitter.addEventListener('click', (event) => {
+
+                /* Empêche le comportement de base du bouton */
+                event.preventDefault();
+                event.stopPropagation();
+
+                /* Change la valeur du bouton enregistrer client */
+                boutonEnregistrerClient.textContent = "Enregister le nouveau client";
+
+                /* Retire le bouton supprimer et le bouton quitter */
+                divBoutonSupprimer.innerHTML = "";
+                divBoutonQuitter.innerHTML = "";
+
+                /* Réinitialise les champs pour ajouter un client */
+                nomClient.value = "";
+                prenomClient.value = "";
+                emailClient.value = "";
+                telephoneClient.value = "";
+                adresseClient.value = "";
+
+            })
         });
 
 
@@ -354,6 +384,9 @@ buttonTrier.addEventListener("click", ()=> {
             /* Rempli le tableau côté frontend par la suite */       
             remplirTableau();
 
+            /* Rend la checkbox indisponible */
+            PlusHautMontantDu.disabled = true;
+
         }  else if (PlusBasMontantDu.checked) {
 
             /* Filtre le tableau pour que le plus bas montant dû soit en haut et le reste en ordre */
@@ -361,6 +394,9 @@ buttonTrier.addEventListener("click", ()=> {
 
             /* Rempli le tableau côté frontend par la suite */
             remplirTableau();
+
+            /* Rend la checkbox indisponible */
+            PlusBasMontantDu.disabled = true;
 
         } else if (PlusPretsActifs.checked) {
 
@@ -370,6 +406,9 @@ buttonTrier.addEventListener("click", ()=> {
             /* Rempli le tableau côté frontend par la suite */
             remplirTableau();
 
+            /* Rend la checkbox indisponible */
+            PlusPretsActifs.disabled = true;
+
         } else if (MoinsPretsActifs.checked) {
 
             /* Filtre le tableau pour que le plus de prêts actifs soit en haut */
@@ -377,6 +416,9 @@ buttonTrier.addEventListener("click", ()=> {
 
             /* Rempli le tableau côté frontend par la suite */
             remplirTableau();
+
+            /* Rend la checkbox indisponible */
+            MoinsPretsActifs.disabled = true;
             
         };
 
@@ -388,5 +430,15 @@ buttonTrier.addEventListener("click", ()=> {
 
         /* Change la valeur du bouton */
         buttonTrier.textContent = "Rechercher"
+
+        /* Change le focus pour l'option de base */
+        PlusHautMontantDu.checked = true;
+
+        /* Rend les checkbox disponibles */
+        PlusHautMontantDu.disabled = false;
+        PlusBasMontantDu.disabled = false;
+        PlusPretsActifs.disabled = false;
+        MoinsPretsActifs.disabled = false;
+
     };
 });
