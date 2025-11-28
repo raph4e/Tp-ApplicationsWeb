@@ -51,7 +51,7 @@
                             <div class="control has-icons-left">
                                 <div class="select">
                                     <select id="selectDropDownMenuNomsClients">
-                                        <option value= "0" selected>Sélectionner un client</option>
+                                        <option value="0" selected>Sélectionner un client</option>
                                     </select>
                                     <span class="icon is-normal is-left">
                                         <i class="fa-solid fa-user"></i>
@@ -140,7 +140,19 @@
             <!-- Calcule automatiquement intérêts cumulés, solde restant, statut (ACTIF, REMBOURSÉ, EN RETARD).-->
         </div>
         <div class="partieDroite">
-            <div class="tableau"></div>
+            <div class="div-tableau box">
+                <h1 class="title titleColor">Liste des prêts</h1>
+                <div class="tableau">
+                    <table class="table" id="tableauPrets">
+                        <tr>
+                            <th>ID Prêt</th>
+                            <th>Intérêts cumulés</th>
+                            <th>Solde restant</th>
+                            <th>Statut</th>
+                        </tr>
+                    </table>
+                </div>
+            </div>
             <div class="selection"></div>
         </div>
 

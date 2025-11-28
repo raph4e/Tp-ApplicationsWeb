@@ -176,7 +176,7 @@ app.post('/addPret', async (req, res) => {
         const numPret = Number(montantPret)
         const numInteret = Number(interet)
         const numDuree = Number(duree)
-        const date_dateDebut = new Date(dateDebut)
+        const date_dateDebut = dateDebut
         // checks pour voir si un des champs est vide
         if (!idClient) {
             return res.status(400).json({ error: "Champ 'idClient' non rempli" })
