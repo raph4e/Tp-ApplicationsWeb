@@ -148,7 +148,7 @@ app.delete('/deleteClient/:id', async (req, res) => {
 /* Requête permettant de récupérer tout les prêts */
 app.get('/getPrets', async (req, res) => {
     try {
-        const resultat = await db("prets").select("*").orderBy("idClient", "desc")
+        const resultat = await db("prets").select("*").orderBy("idPret", "desc")
         res.status(200).json(resultat)
     }
     catch (err) {
