@@ -56,10 +56,10 @@ main {
 .formulaire {
     display: flex;
     flex-wrap: wrap;
-    gap: 1.5em;
+    gap: 1em;
     padding: 1.1em;
     flex-direction: column;
-    margin-top: 1.5em;
+    margin-top: 1em;
 }
 
 #formClient {
