@@ -157,6 +157,27 @@ app.get('/getPrets', async (req, res) => {
     }
 })
 
+/* Requête permettant de récupérer un client en fonction de ses prêts */
+app.get('/getNomPrets/:idClient', async (req, res) => {
+    try {
+
+        /* Récupère l'id du client en paramètre */
+        const idClient = req.params.idClient
+
+        /* Récupère le prénom et le nom correspondant */
+        const client = await db("clients").select("prenom", "nom").where({id : idClient})
+
+        /* Renvoie le résultat au côté client */
+        res.status(200).json(client)
+
+    } catch (err) {
+
+        /* Envoie une erreur si c'est le cas */
+        console.error("Erreur /getNomPrets", err)
+        res.status(500).json({ error: "Erreur serveur." })
+    }
+})
+
 /* Requête qui récupère le prenom et le nom de chaque client */
 app.get('/getNomsClients', async (req, res) => {
     try {
@@ -225,6 +246,36 @@ app.post('/addPret', async (req, res) => {
         res.status(201).json(pret)
     }
     catch (err) {
+        console.error("Erreur /addPret", err);
+        res.status(500).json({ error: "Erreur serveur" })
+    }
+})
+
+/* Requête qui permet d'ajouter des paiements */
+app.post('/addPaiement', async (req, res) => {
+    try {
+
+        /* Récupère les infos du paiement ajouté */
+        const { idPret, montantPaye, datePaiement, modePaiement, notePaiement } = req.body;
+
+        /* Vérifie les champs */
+        
+        
+        /* Le store dans une variable */
+        const paiement = {
+            idPrêt : idPret,
+            montantPaye : montantPaye,
+            datePaiement : datePaiement,
+            modePaiement : modePaiement,
+            notePaiement : notePaiement
+        };
+
+        /* Ajoute le paiement à la table paiements */
+        await db('paiements').insert(paiement);
+
+    } catch (err) {
+
+        /* Envoie une erreur si c'est le cas */
         console.error("Erreur /addPret", err);
         res.status(500).json({ error: "Erreur serveur" })
     }
