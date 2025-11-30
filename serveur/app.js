@@ -198,6 +198,7 @@ app.post('/addPret', async (req, res) => {
         const numInteret = Number(interet)
         const numDuree = Number(duree)
         const date_dateDebut = dateDebut
+
         // checks pour voir si un des champs est vide
         if (!idClient) {
             return res.status(400).json({ error: "Champ 'idClient' non rempli" })
@@ -259,7 +260,18 @@ app.post('/addPaiement', async (req, res) => {
         const { idPret, montantPaye, datePaiement, modePaiement, notePaiement } = req.body;
 
         /* Vérifie les champs */
-        
+        if (!idPret) {
+            return res.status(400).json({ error: "Champ 'idPret' non rempli" })
+        }
+        if (!montantPaye) {
+            return res.status(400).json({ error: "Champ 'montantPaye' non rempli" })
+        }
+        if (!datePaiement) {
+            return res.status(400).json({ error: "Champ 'datePaiement' non rempli" })
+        }
+        if (!modePaiement) {
+            return res.status(400).json({ error: "Champ 'modePaiement' non rempli" })
+        }
         
         /* Le store dans une variable */
         const paiement = {
@@ -273,6 +285,22 @@ app.post('/addPaiement', async (req, res) => {
         /* Ajoute le paiement à la table paiements */
         await db('paiements').insert(paiement);
 
+        /* Retire le montant paye dans le pret correspondant */
+        await db('prets')
+        .where({idPret: idPret})
+        .decrement("montant", montantPaye);
+
+        /* Store le prêt correspondant dans une variable */
+        pretCorrespondant = await db('prets').where({idPret: idPret}).first();
+
+        /* Si le prêt est remboursé complètement on le supprime */
+        if (pretCorrespondant.montant <= 0) {
+            await db('prets').where({idPret: pretCorrespondant.idPret}).del();
+        };
+
+        /* Envoie un message de confirmation */
+        res.status(200).json({ message: "Paiement ajouté avec succès" });
+        
     } catch (err) {
 
         /* Envoie une erreur si c'est le cas */
@@ -280,3 +308,24 @@ app.post('/addPaiement', async (req, res) => {
         res.status(500).json({ error: "Erreur serveur" })
     }
 })
+
+/* Requête qui permet de récupérer tout les paiements */
+app.get('/getPaiements', async (req, res) => {
+    try {
+
+        /* Récupère tous les clients dans la base de données */
+        const paiements = await db('paiements').select("*");
+
+        /* Renvoie les produits au client */
+        res.status(200).json(paiements);
+
+    } catch (error) {
+
+        /* En cas d'erreur, on l'affiche dans la console et on renvoie un code 500 a l'utilisateur */
+        console.error("Erreur lors de la récupération des paiements :", error);
+
+        /* Renvoie une réponse a l'utilisateur avec un code 500 */
+        res.status(500).json({ error: "Erreur serveur" });
+
+    }
+});

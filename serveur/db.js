@@ -50,7 +50,7 @@ async function createTable() {
             table.integer("idPrêt").notNullable()
             table.foreign("idPrêt").references("prets.id")
             table.integer("montantPaye").notNullable()
-            table.string("datePaiement").notNullable()
+            table.date("datePaiement").notNullable()
             table.string("modePaiement").notNullable()
             table.string("notePaiement").notNullable()          
         })

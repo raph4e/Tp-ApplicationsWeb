@@ -104,7 +104,7 @@
                     <div class="field-body bodyInput">
                         <div class="field">
                             <div class="control has-icons-left">
-                                <input id="modePaiement" class="input" type="number" placeholder="(cash, virement, carte de crédit, etc.)">
+                                <input id="modePaiement" class="input" type="text" placeholder="(cash, virement, carte de crédit, etc.)">
                                 <span class="icon is-normal is-left">
                                     <i class="fa-solid fa-credit-card"></i>
                                 </span>
@@ -121,20 +121,39 @@
                     <div class="field-body bodyInput">
                         <div class="field">
                             <div class="control has-icons-left">
-                                <textarea id="notePaiement" class="textarea" placeholder="Entrer une note"></textarea>
+                                <textarea id="notePaiement" class="textarea" placeholder="Entrer une note (facultatif)"></textarea>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <!-- Bouton enregistrer -->
                 <button class="button is-primary" id="savePaiement">Enregister le paiement</button>
+
+                <!-- Message de confirmation -->
+                <div class="div-message-confirmation">
+                    <p class="message-confirmation" id="messageConfirmation"></p>
+                </div>                
             </div>
 
 
             <!-- Calcule automatiquement intérêts cumulés, solde restant, statut (ACTIF, REMBOURSÉ, EN RETARD).-->
         </div>
         <div class="partieDroite">
-            <div class="tableau"></div>
-            <div class="selection"></div>
+            <!--Tableau qui liste les clients-->
+            <div class="div-tableau box">
+                <h1 class="title titleColor">Liste des paiements</h1>
+                <div class="tableau">
+                    <table class="table" id="tableauPaiements">
+                        <tr>
+                            <th>Id du prêt</th>
+                            <th>Montant payé</th>
+                            <th>Date du paiement</th>
+                            <th>Mode de paiement</th>
+                        </tr>
+                    </table>
+                </div>
+            </div>
         </div>
 
     </main>
