@@ -165,7 +165,7 @@ app.get('/getNomPrets/:idClient', async (req, res) => {
         const idClient = req.params.idClient
 
         /* Récupère le prénom et le nom correspondant */
-        const client = await db("clients").select("prenom", "nom").where({id : idClient})
+        const client = await db("clients").select("id", "prenom", "nom").where({id : idClient})
 
         /* Renvoie le résultat au côté client */
         res.status(200).json(client)
@@ -257,7 +257,12 @@ app.post('/addPaiement', async (req, res) => {
     try {
 
         /* Récupère les infos du paiement ajouté */
-        const { idPret, montantPaye, datePaiement, modePaiement, notePaiement } = req.body;
+        let { idPret, montantPaye, datePaiement, modePaiement, notePaiement, clientId } = req.body;
+
+        /* Converti en nombre */
+        idPret = Number(idPret);
+        montantPaye = Number(montantPaye);
+        clientId = Number(clientId);
 
         /* Vérifie les champs */
         if (!idPret) {
@@ -290,12 +295,20 @@ app.post('/addPaiement', async (req, res) => {
         .where({idPret: idPret})
         .decrement("montant", montantPaye);
 
+        /* Récupère le client correspondant au prêt et soustraie le paiement de son montant dû */
+        await db('clients')
+        .where({id: clientId})
+        .decrement("montantDu", montantPaye)
+
         /* Store le prêt correspondant dans une variable */
         pretCorrespondant = await db('prets').where({idPret: idPret}).first();
 
         /* Si le prêt est remboursé complètement on le supprime */
-        if (pretCorrespondant.montant <= 0) {
+        if (pretCorrespondant && pretCorrespondant.montant <= 0) {
             await db('prets').where({idPret: pretCorrespondant.idPret}).del();
+
+            /* Supprime le prêt dans la table clients */
+            await db('clients').where({id: clientId}).decrement("nombreDePrets", 1);
         };
 
         /* Envoie un message de confirmation */
@@ -304,7 +317,7 @@ app.post('/addPaiement', async (req, res) => {
     } catch (err) {
 
         /* Envoie une erreur si c'est le cas */
-        console.error("Erreur /addPret", err);
+        console.error("Erreur /addPaiement", err);
         res.status(500).json({ error: "Erreur serveur" })
     }
 })

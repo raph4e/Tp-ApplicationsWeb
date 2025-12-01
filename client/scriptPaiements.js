@@ -64,6 +64,22 @@ savePaiement.addEventListener('click', async ()=> {
     /* Ajoute un paiement à la base de données */
     try {
 
+        /* Sélectionne le prêt */
+        const idPretChoisi = selectDropDownMenuPrets.value;
+
+        /* Charger la liste des prêts */
+        const repPrets = await fetch('/getPrets');
+        const listePrets = await repPrets.json();
+
+        /* Trouver le prêt correspondant à l'option choisie */
+        const pret = listePrets.find(p => p.idPret == idPretChoisi);
+
+        /* Vérifie que le prêt existe */
+        if (!pret) {
+            console.error("Prêt introuvable");
+            return;
+        }
+
         /* Récupère la requête afin d'ajouter un client à la base de données */
         const res = await fetch('/addPaiement', {
             method: 'POST',
@@ -73,7 +89,8 @@ savePaiement.addEventListener('click', async ()=> {
                 montantPaye : montantPaye.value,
                 datePaiement : datePaiement.value,
                 modePaiement : modePaiement.value,
-                notePaiement : notePaiement.value
+                notePaiement : notePaiement.value,
+                clientId : Number(pret.idClient)
             })
         });
 
@@ -81,7 +98,7 @@ savePaiement.addEventListener('click', async ()=> {
         if (!res.ok) {
 
             const err = await res.text();
-            console.error("Erreur serveur :", err);
+            console.error("Erreur serveur");
 
             /* L'indique au client */
             messageConfirmation.textContent = "Une erreur est survenu lors de l'ajout du paiement, veuillez réessayer"
@@ -115,8 +132,10 @@ savePaiement.addEventListener('click', async ()=> {
     catch (error) {
 
         /* Envoie une erreur si c'est le cas */
-        console.error("Erreur fetch /addPeiment", err)
-        res.status(500).json({ error: "Erreur serveur." })
+        console.error("Erreur fetch /addPeiment", error)
+
+        /* L'indique côté client */
+        messageConfirmation.textContent = "Erreur lors de l'ajout du paiement.";
 
     }
 })
