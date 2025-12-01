@@ -342,3 +342,17 @@ app.get('/getPaiements', async (req, res) => {
 
     }
 });
+
+// requete pour verifier l'état de paiement d'un certain pret
+app.get('/getSpecificPaiement/:id', async (req, res)=>{
+    try {
+        let id = req.params
+        idPret = Number(id)
+        const resultat = await db('paiements').select('*').where({dPret: idPret})
+        res.status(200).json(resultat)
+    }
+    catch(error){
+        console.error("Erreur lors de la récupération du paiement :", error);
+        res.status(500).json({ error: "Erreur serveur" });   
+    }
+})
