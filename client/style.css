@@ -154,3 +154,26 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     padding: 2em;
 }
 
+
+/* Partie pour la page connexion-inscription */
+.form-connexion-inscription {
+    height: 100%;
+    width: 100%;
+    background-color: #30a2d6;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.div-form {
+    background-color: white;
+    border-radius: 10px;
+    height: 35%;
+    width: 50%;
+    margin-top: 5em;
+}
+
+.submit-btn {
+    margin-top: 1em;
+}

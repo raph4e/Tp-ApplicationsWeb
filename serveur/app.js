@@ -377,6 +377,8 @@ app.get('/getAdminConnecte', async (req, res) => {
         /* Envoie l'admin connecté au client */
         res.status(200).json(adminConnecte)
     } catch(error) {
+
+        /* Indique une erreur si c'est le cas */
         console.error("Erreur lors de la récupération de l'admin connecté (/getAdminConnecte");
         res.status(500).json({ error: "Erreur serveur" })
     }
