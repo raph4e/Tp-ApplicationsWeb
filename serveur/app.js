@@ -1,23 +1,29 @@
 /* Fichier app.js : point d'entrée du serveur */
 const express = require('express');
+
 /* Path permet de gérer les chemins de fichiers */
 const path = require('path');
+
 /* Importe la base de données de db.js */
 const { db, createTable } = require('./db');
+
 /* Créer une instance du serveur express */
 const app = express();
+
 /* Importe le package crypto pour générer des identifiants uniques */
 const crypto = require('crypto');
 const { error } = require('console');
+
 /* Permet au serveur de traiter des données au format Json */
 app.use(express.json());
+
 /* Créer une route jusque dans le dossier client */
 app.use(express.static(path.join(__dirname, '../client')));
+
 /* Joint le chemin jusqu'à dashboard.html */
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, "../client", "dashboard.html"));
 });
-
 
 /* Crée la table clients si elle n'existe pas, puis démarre le serveur */
 createTable().then(() => {
@@ -34,7 +40,7 @@ createTable().then(() => {
     process.exit(1);
 });
 
-
+/* Requête permettant d'ajouter un client */
 app.post('/addClient', async (req, res) => {
     try {
         /* Récupère les infos du client a créé */
@@ -81,6 +87,7 @@ app.post('/addClient', async (req, res) => {
     }
 })
 
+/* Requête permettant de modifier un client en fonction de son id */
 app.put('/editClient/:id', async (req, res) => {
     try {
         /* Récupère les infos du client à modifié */
@@ -303,12 +310,9 @@ app.post('/addPaiement', async (req, res) => {
         /* Store le prêt correspondant dans une variable */
         pretCorrespondant = await db('prets').where({idPret: idPret}).first();
 
-        /* Si le prêt est remboursé complètement on le supprime */
+        /* Si le prêt est remboursé complètement on l'indique avec la colonne statut */
         if (pretCorrespondant && pretCorrespondant.montant <= 0) {
-            await db('prets').where({idPret: pretCorrespondant.idPret}).del();
-
-            /* Supprime le prêt dans la table clients */
-            await db('clients').where({id: clientId}).decrement("nombreDePrets", 1);
+            await db('prets').where({idPret: pretCorrespondant.idPret}).update({statut : 'payé'})
         };
 
         /* Envoie un message de confirmation */
@@ -344,7 +348,7 @@ app.get('/getPaiements', async (req, res) => {
 });
 
 // requete pour verifier l'état de paiement d'un certain pret
-app.get('/getSpecificPaiement/:id', async (req, res)=>{
+app.get('/getSpecificPaiement/:id', async (req, res)=> {
     try {
         let id = req.params
         idPret = Number(id)
@@ -354,5 +358,26 @@ app.get('/getSpecificPaiement/:id', async (req, res)=>{
     catch(error){
         console.error("Erreur lors de la récupération du paiement :", error);
         res.status(500).json({ error: "Erreur serveur" });   
+    }
+})
+
+/* Requête permettant de récupérer l'admin connecté si c'est le cas */
+app.get('/getAdminConnecte', async (req, res) => {
+
+    try {
+
+        /* Récupère l'admin connecté */
+        const adminConnecte = await db('adminConnecte').select('*').first();
+
+        /* Indique au client s'il n'y a pas d'admin connecté */
+        if (!adminConnecte) {
+            res.status(404).json("Aucun admin connecté, veuillez vous connecter ou vous inscrire")
+        }
+
+        /* Envoie l'admin connecté au client */
+        res.status(200).json(adminConnecte)
+    } catch(error) {
+        console.error("Erreur lors de la récupération de l'admin connecté (/getAdminConnecte");
+        res.status(500).json({ error: "Erreur serveur" })
     }
 })

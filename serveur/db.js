@@ -17,6 +17,8 @@ async function createTable() {
     const exist = await db.schema.hasTable("clients");
     const pretsExist = await db.schema.hasTable("prets")
     const paiementsExist = await db.schema.hasTable("paiements")
+    const adminExist = await db.schema.hasTable("admin")
+    const adminConnecteExist = await db.schema.hasTable("adminConnecte")
     /* Si la table n'existe pas, on la crée */
     if (!exist) {
         await db.schema.createTable("clients", (table) => {
@@ -41,6 +43,7 @@ async function createTable() {
             table.decimal("interet", 6, 2).notNullable()
             table.integer("duree").notNullable()
             table.date("dateDebut").notNullable()
+            table.string("statut")
         })
         console.log("Table 'prets' créée!")
     }
@@ -55,6 +58,19 @@ async function createTable() {
             table.string("notePaiement").notNullable()          
         })
         console.log("Table 'paiements' créée! ")
+    }
+    if (!adminExist) {
+        await db.schema.createTable("admin", (table) => {
+            table.increments("idAdmin").primary(),
+            table.string("nomAdmin").notNullable(),
+            table.string("mdpAdmin").notNullable()
+        })
+    }
+    if (!adminConnecteExist) {
+        await db.schema.createTable("adminConnecte", (table) => {
+            table.string("idAdminConnecte").notNullable(),
+            table.string("nomAdminConnecte").notNullable()
+        })
     }
 }
 
