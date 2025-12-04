@@ -172,7 +172,7 @@ app.get('/getNomPrets/:idClient', async (req, res) => {
         const idClient = req.params.idClient
 
         /* Récupère le prénom et le nom correspondant */
-        const client = await db("clients").select("id", "prenom", "nom").where({id : idClient})
+        const client = await db("clients").select("id", "prenom", "nom").where({ id: idClient })
 
         /* Renvoie le résultat au côté client */
         res.status(200).json(client)
@@ -234,21 +234,23 @@ app.post('/addPret', async (req, res) => {
 
         const pret = {
             idClient: idClient,
+            montantInitial: numPret,
             montant: numPret,
             interet: numInteret,
             duree: numDuree,
-            dateDebut: date_dateDebut
+            dateDebut: date_dateDebut,
+            statut: "Actif"
         }
 
         /* Ajoute le montant du prêt à la colonne montant dû du client */
         await db('clients')
-        .where({ id: idClient  })
-        .increment('montantDu', numPret); 
+            .where({ id: idClient })
+            .increment('montantDu', numPret);
 
         /* Ajoute 1 à la colonne nombre de prêts du client */
         await db('clients')
-        .where({ id: idClient  })
-        .increment('nombreDePrets', 1); 
+            .where({ id: idClient })
+            .increment('nombreDePrets', 1);
 
         const resultat = await db("prets").insert(pret)
         res.status(201).json(pret)
@@ -284,14 +286,14 @@ app.post('/addPaiement', async (req, res) => {
         if (!modePaiement) {
             return res.status(400).json({ error: "Champ 'modePaiement' non rempli" })
         }
-        
+
         /* Le store dans une variable */
         const paiement = {
-            idPrêt : idPret,
-            montantPaye : montantPaye,
-            datePaiement : datePaiement,
-            modePaiement : modePaiement,
-            notePaiement : notePaiement
+            idPret: idPret,
+            montantPaye: montantPaye,
+            datePaiement: datePaiement,
+            modePaiement: modePaiement,
+            notePaiement: notePaiement
         };
 
         /* Ajoute le paiement à la table paiements */
@@ -299,25 +301,25 @@ app.post('/addPaiement', async (req, res) => {
 
         /* Retire le montant paye dans le pret correspondant */
         await db('prets')
-        .where({idPret: idPret})
-        .decrement("montant", montantPaye);
+            .where({ idPret: idPret })
+            .decrement("montant", montantPaye);
 
         /* Récupère le client correspondant au prêt et soustraie le paiement de son montant dû */
         await db('clients')
-        .where({id: clientId})
-        .decrement("montantDu", montantPaye)
+            .where({ id: clientId })
+            .decrement("montantDu", montantPaye)
 
         /* Store le prêt correspondant dans une variable */
-        pretCorrespondant = await db('prets').where({idPret: idPret}).first();
+        pretCorrespondant = await db('prets').where({ idPret: idPret }).first();
 
         /* Si le prêt est remboursé complètement on l'indique avec la colonne statut */
         if (pretCorrespondant && pretCorrespondant.montant <= 0) {
-            await db('prets').where({idPret: pretCorrespondant.idPret}).update({statut : 'payé'})
+            await db('prets').where({ idPret: pretCorrespondant.idPret }).update({ statut: 'payé' })
         };
 
         /* Envoie un message de confirmation */
         res.status(200).json({ message: "Paiement ajouté avec succès" });
-        
+
     } catch (err) {
 
         /* Envoie une erreur si c'est le cas */
@@ -347,20 +349,6 @@ app.get('/getPaiements', async (req, res) => {
     }
 });
 
-// requete pour verifier l'état de paiement d'un certain pret
-app.get('/getSpecificPaiement/:id', async (req, res)=> {
-    try {
-        let id = req.params
-        idPret = Number(id)
-        const resultat = await db('paiements').select('*').where({dPret: idPret})
-        res.status(200).json(resultat)
-    }
-    catch(error){
-        console.error("Erreur lors de la récupération du paiement :", error);
-        res.status(500).json({ error: "Erreur serveur" });   
-    }
-})
-
 /* Requête permettant de récupérer l'admin connecté si c'est le cas */
 app.get('/getAdminConnecte', async (req, res) => {
 
@@ -376,10 +364,47 @@ app.get('/getAdminConnecte', async (req, res) => {
 
         /* Envoie l'admin connecté au client */
         res.status(200).json(adminConnecte)
-    } catch(error) {
+    } catch (error) {
 
         /* Indique une erreur si c'est le cas */
         console.error("Erreur lors de la récupération de l'admin connecté (/getAdminConnecte");
+        res.status(500).json({ error: "Erreur serveur" })
+    }
+})
+
+// pour vérifier si le payement est en retard
+app.put('/updateRetard/:idPret', async (req, res) => {
+    try {
+        const { idPret } = req.params
+        // selectionne le dernier payement
+        const payement = await db('paiements').max('datePaiement as datePaiement').where({ idPret: idPret }).first()
+        // si erreur
+        if (!payement || !payement.datePaiement) {
+            res.status(200).json({message: "Aucun paiement trouvé pour ce prêt"})
+            return
+        }
+        const datePaiement = new Date(payement.datePaiement)
+
+        const diffMs = Date.now() - datePaiement.getTime();
+        const diffJours = diffMs / (1000 * 60 * 60 * 24);
+
+        //si plus de 31 jours depuis dernier payement
+        if (diffJours > 31) {
+            // select montant restant du pret
+            const pret = await db('prets').select('montant').where({ idPret: idPret }).first()
+            // si erreur
+            if (!pret) {
+                return res.status(200).json("Erreur lors de la recherche du pret")
+            }
+            // si pas remboursé au complet
+            if (pret.montant > 0) {
+                await db('prets').where({ idPret }).update({ statut: "Retard" })
+            }
+        }
+        return res.status(200).json({ message: "Statut du prêt mis à jour" });
+    }
+    catch {
+        console.error("Erreur lors de la mise à jour du statut du prêt");
         res.status(500).json({ error: "Erreur serveur" })
     }
 })

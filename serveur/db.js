@@ -39,6 +39,7 @@ async function createTable() {
             table.increments("idPret").primary()
             table.integer("idClient").notNullable()
             table.foreign("idClient").references("clients.id")
+            table.decimal("montantInitial", 6, 2).notNullable()
             table.decimal("montant", 6, 2).notNullable()
             table.decimal("interet", 6, 2).notNullable()
             table.integer("duree").notNullable()
@@ -50,8 +51,8 @@ async function createTable() {
     if (!paiementsExist) {
         await db.schema.createTable("paiements", (table) => {
             table.increments("idPaiement").primary();
-            table.integer("idPrêt").notNullable()
-            table.foreign("idPrêt").references("prets.id")
+            table.integer("idPret").notNullable()
+            table.foreign("idPret").references("prets.id")
             table.integer("montantPaye").notNullable()
             table.date("datePaiement").notNullable()
             table.string("modePaiement").notNullable()
