@@ -380,7 +380,7 @@ app.put('/updateRetard/:idPret', async (req, res) => {
         const payement = await db('paiements').max('datePaiement as datePaiement').where({ idPret: idPret }).first()
         // si erreur
         if (!payement || !payement.datePaiement) {
-            res.status(200).json({message: "Aucun paiement trouvé pour ce prêt"})
+            res.status(200).json({ message: "Aucun paiement trouvé pour ce prêt" })
             return
         }
         const datePaiement = new Date(payement.datePaiement)
@@ -406,5 +406,47 @@ app.put('/updateRetard/:idPret', async (req, res) => {
     catch {
         console.error("Erreur lors de la mise à jour du statut du prêt");
         res.status(500).json({ error: "Erreur serveur" })
+    }
+})
+
+
+app.delete('/deletePret/:idPret', async (req, res) => {
+    try {
+        const { idPret } = req.params
+        const pret = await db('prets').where({ idPret }).first()
+        if (!pret) {
+            return res.status(404).json({ message: "pret non trouvé dans la bd" })
+        }
+        await db('prets').where({ idPret }).del()
+        res.status(200).json({ pretSupprime: pret })
+    }
+    catch (err) {
+        console.err("Erreur lors de la suppression du prêt", err)
+        res.status(500).json({ err: "Erreur serveur" })
+    }
+})
+
+app.put('/updatePret/:idPret', async (req, res) => {
+    try {
+        const { idPret } = req.params
+        const { idClient, montantPret, interet, duree, dateDebut } = req.body
+
+        const pret = {
+            idPret: idPret,
+            idClient: idClient,
+            montant: Number(montantPret),
+            interet: Number(interet),
+            duree: Number(duree),
+            dateDebut: dateDebut
+        }
+
+        const modification = await db('prets').where({ idPret }).update(pret)
+        // si requette marche pas on envoye une erreur
+        if (!modification) { return res.status(404).json({ message: "Pret non trouvable dans la bd" }) }
+        res.status(200).json(modification)
+    }
+    catch (error) {
+        console.error("Erreur lors de la modification du prêt :", error);
+        res.status(500).json({ error: "Erreur lors de la modification du prêt" });
     }
 })

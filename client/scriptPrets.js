@@ -7,6 +7,10 @@ const dateDebut = document.getElementById("dateDebut")
 const bouttonSave = document.getElementById("savePret")
 const formulairePret = document.getElementById("form")
 const tableauPrets = document.getElementById("tableauPrets")
+const bouttonDelete = document.getElementById("bouttonSupprimer")
+const bouttonQuit = document.getElementById("bouttonQuitter")
+const messageConfirmation = document.getElementById("msgConfirmation")
+const idPretHidden = document.getElementById('idPret')
 
 async function loadPrets() {
     const res = await fetch('http://localhost:3000/getPrets');
@@ -30,24 +34,48 @@ function calculateLoan(montantRestant, interet, nbreMois) {
 
 // ajout du pret dans la bd lorsqu'on clique enregistrer
 bouttonSave.addEventListener('click', async () => {
-    const resultat = await fetch("/addPret", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            idClient: dropDownMenuNomClients.value,
-            montantPret: parseFloat(montantPret.value),
-            interet: parseFloat(interet.value),
-            duree: parseInt(dureePret.value),
-            dateDebut: dateDebut.value
+    // si le boutton est normal, effectue ses actions de base
+    if (bouttonSave.textContent == 'Enregistrer le prêt') {
+        const resultat = await fetch("/addPret", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                idClient: dropDownMenuNomClients.value,
+                montantPret: parseFloat(montantPret.value),
+                interet: parseFloat(interet.value),
+                duree: parseInt(dureePret.value),
+                dateDebut: dateDebut.value
+            })
         })
-    })
-    if (!resultat.ok) {
-        throw new Error("Erreur du côté serveur")
+        if (!resultat.ok) {
+            throw new Error("Erreur du côté serveur")
+        }
+        // reset tous les champs et focus le montant du pret, refresh aussi tous les prets
+        clearForm()
+        montantPret.focus()
+        await loadPrets()
     }
-    // reset tous les champs et focus le montant du pret, refresh aussi tous les prets
-    clearForm()
-    montantPret.focus()
-    await loadPrets()
+    // si non, il est en "mode edit" et on change ses actions
+    else {
+        const mod = await fetch(`/updatePret/${idPretHidden.value}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                idClient: dropDownMenuNomClients.value, 
+                montantPret: parseFloat(montantPret.value),
+                interet: parseFloat(interet.value),
+                duree: parseInt(dureePret.value),
+                dateDebut: dateDebut.value
+            })
+        })
+        if (!mod.ok){
+            throw new Error("Erreur du côté serveur")
+        }
+        clearForm()
+        loadPrets()
+        loadTable()
+        montantPret.focus()
+    }
 })
 
 async function loadClients() {
@@ -96,7 +124,7 @@ async function loadTable() {
             row.innerHTML = `
             <td>${p.idPret}</td>
             <td>${(calculateLoan(p.montant, p.interet, p.duree) * p.duree - p.montantInitial).toFixed(2)}$</td>
-            <td>${p.montant.toFixed(2)}$</td>
+            <td>${(calculateLoan(p.montant, p.interet, p.duree) * p.duree).toFixed(2)}$</td>
             <td>${(calculateLoan(p.montant, p.interet, p.duree)).toFixed(2)}$</td>
             <td>${p.statut}
             <td>
@@ -105,58 +133,61 @@ async function loadTable() {
             `
             // ajoute la rangée au tableau
             tableauPrets.appendChild(row)
-            
+
             // fonctionalité pour le boutton de selection du prêt
-            rangee.querySelector('.selectionner').addEventListener("click", (e) => {
+            row.querySelector('.selectionner').addEventListener("click", (e) => {
                 e.preventDefault();
                 // Retire le message de confirmation 
                 messageConfirmation.textContent = "";
                 // Assigne les valeurs dans les inputs 
-                nomClient.value = c.nom;
-                prenomClient.value = c.prenom;
-                emailClient.value = c.email;
-                telephoneClient.value = c.numeroDeTelephone;
-                adresseClient.value = c.adresse;
-                boutonEnregistrerClient.textContent = "Modifier et quitter la sélection";
-                clientModifié = c;
-                divBoutonSupprimer.innerHTML = `<button class="bouton-supprimer button is-primary">Supprimer et quitter la sélection</button>`;
-                divBoutonQuitter.innerHTML = `<button class="bouton-quitter button is-primary">Quitter la sélection</button>`
-                // Supprime un client lorsque le bouton supprimer est cliqué 
+                dropDownMenuNomClients.value = p.idClient
+                montantPret.value = p.montantInitial
+                interet.value = p.interet
+                dureePret.value = p.duree
+                dateDebut.value = p.dateDebut
+                idPretHidden.value = p.idPret
+
+                bouttonSave.textContent = "Modifier et quitter la sélection";
+                pretModifie = p
+                bouttonDelete.innerHTML = '<button class="bouton-supprimer button is-primary">Supprimer et quitter la sélection</button>'
+                bouttonQuit.innerHTML = '<button class="bouton-quitter button is-primary">Quitter la sélection</button>'
+                // Supprime un pret lorsque le bouton supprimer est cliqué 
                 // D'abord, on récupère les boutons 
-                const boutonSupprimer = divBoutonSupprimer.querySelector('.bouton-supprimer');
-                const boutonQuitter = divBoutonQuitter.querySelector('.bouton-quitter')
+                const boutonSupprimer = bouttonDelete.querySelector('.bouton-supprimer');
+                const boutonQuitter = bouttonQuit.querySelector('.bouton-quitter')
                 // Fonction lorsque le bouton supprimer est cliqué 
                 boutonSupprimer.addEventListener("click", async (event) => {
                     // Empêche le comportement de base du bouton 
                     event.preventDefault();
                     event.stopPropagation();
+
+
                     // Supprime le client de la liste clients 
-                    clients = clients.filter((client) => client.id !== c.id);
-                    // Appelle de la requête qui supprime le client de la base de données 
-                    const res = await fetch(`/deleteClient/${c.id}`, {
-                        method: 'DELETE',
-                        headers: { 'Content-Type': 'application/json' }
-                    });
-                    // Envoie une erreur si le client n'a pas été supprimé correctement 
-                    if (!res.ok) throw new Error("Erreur lors de la suppression");
+                    // clients = clients.filter((client) => client.id !== c.id);
+                    // pas besoin???
+
+
+                    // Appelle de la requête qui supprime le pret de la base de données 
+                    const res = await fetch(`/deletePret/${pretModifie.idPret}`, { method: 'DELETE' })
+                    // Envoie une erreur si le pret n'a pas été supprimé correctement 
+                    if (!res.ok) { throw new Error("Erreur lors de la suppression") }
                     // Message de confirmation côté serveur 
                     const data = await res.json();
-                    console.log("Client supprimé côté serveur: ", data.deletedClient)
+                    console.log("Prêt supprimé côté serveur: ", data.pretSupprime)
                     // Message de confirmation 
                     messageConfirmation.textContent = "Client supprimé avec succès!";
-                    // Change la valeur du bouton enregistrer client 
-                    boutonEnregistrerClient.textContent = "Enregister le nouveau client";
+                    // Change la valeur du bouton enregistrer pret 
+                    bouttonSave.textContent = "Enregister le prêt";
                     // Retire le bouton supprimer et le bouton quitter 
-                    divBoutonSupprimer.innerHTML = "";
-                    divBoutonQuitter.innerHTML = "";
-                    // Réinitialise les champs pour ajouter un client 
-                    nomClient.value = "";
-                    prenomClient.value = "";
-                    emailClient.value = "";
-                    telephoneClient.value = "";
-                    adresseClient.value = "";
-                    // Appel de la fonction loadClients()                     
-                    loadClients();
+                    bouttonDelete.innerHTML = "";
+                    bouttonQuit.innerHTML = "";
+                    // Réinitialise les champs pour le prochain pret
+                    clearForm()
+                    // reload des infos                     
+                    loadPrets()
+                    loadClients()
+                    loadTable()
+
                     // Vide le message de confirmation après 2 secondes 
                     setTimeout(() => {
                         messageConfirmation.textContent = "";
@@ -169,16 +200,12 @@ async function loadTable() {
                     event.preventDefault();
                     event.stopPropagation();
                     // Change la valeur du bouton enregistrer client 
-                    boutonEnregistrerClient.textContent = "Enregister le nouveau client";
+                    bouttonSave.textContent = "Enregister le prêt";
                     // Retire le bouton supprimer et le bouton quitter 
-                    divBoutonSupprimer.innerHTML = "";
-                    divBoutonQuitter.innerHTML = "";
-                    // Réinitialise les champs pour ajouter un client 
-                    nomClient.value = "";
-                    prenomClient.value = "";
-                    emailClient.value = "";
-                    telephoneClient.value = "";
-                    adresseClient.value = "";
+                    bouttonDelete.innerHTML = "";
+                    bouttonQuit.innerHTML = "";
+                    // Réinitialise les champs pour le prochain pret
+                    clearForm()
                 })
             }
             )

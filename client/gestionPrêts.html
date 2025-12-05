@@ -38,6 +38,8 @@
             </aside>
         </div>
         <div class="partieGauche">
+            <!--valeur pour cacher et récupperer l'id du pret lors de la modification-->
+            <input type="hidden" id="idPret" value="">
             <!-- Sélection du client avec un drop down menu, à changer pour mettre les vrais clients via BD-->
             <div class="formulaire" id="form">
                 <!-- Titre qui indique l'ajout d'un nouveau prêt-->
@@ -61,7 +63,7 @@
                         </div>
                     </div>
                 </div>
-
+                
                 <!-- Entrée du montant du prêt -->
                 <!-- mettre un max? min + haut que 0? -->
                 <div class="field is-horizontal sectionInput">
@@ -133,22 +135,17 @@
                         </div>
                     </div>
                 </div>
+                <!-- Bouton enregistrer -->
                 <button class="button is-primary" id="savePret">Enregister le prêt</button>
+                <!-- Bouton supprimer -->
+                <div class="div-bouton-supprimer" id="bouttonSupprimer"></div>
+                <!-- Bouton quitter -->
+                <div class="div-bouton-quitter" id="bouttonQuitter"></div>
+                <!-- Message de confirmation -->
+                <div class="div-message-confirmation">
+                    <p class="message-confirmation" id="msgConfirmation"></p>
+                </div>
             </div>
-            <!-- Bouton enregistrer -->
-            <button type="submit" class="button is-primary " id="boutonEnregistrerClient">Enregister le nouveau client</button>
-
-            <!-- Bouton supprimer -->
-            <div class="div-bouton-supprimer" id="divBoutonSupprimer"></div>
-
-            <!-- Bouton quitter -->
-            <div class="div-bouton-quitter" id="divBoutonQuitter"></div>
-
-            <!-- Message de confirmation -->
-            <div class="div-message-confirmation">
-                <p class="message-confirmation" id="messageConfirmation"></p>
-            </div>
-
 
             <!-- Calcule automatiquement intérêts cumulés, solde restant, statut (ACTIF, REMBOURSÉ, EN RETARD).-->
         </div>
