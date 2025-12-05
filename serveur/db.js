@@ -64,14 +64,17 @@ async function createTable() {
         await db.schema.createTable("admin", (table) => {
             table.increments("idAdmin").primary(),
             table.string("nomAdmin").notNullable(),
-            table.string("mdpAdmin").notNullable()
+            table.string("motDePasseAdmin").notNullable()
         })
+        console.log("Table 'admin' créée! ")
     }
     if (!adminConnecteExist) {
         await db.schema.createTable("adminConnecte", (table) => {
             table.string("idAdminConnecte").notNullable(),
-            table.string("nomAdminConnecte").notNullable()
+            table.string("nomAdminConnecte").notNullable(),
+            table.string("motDePasseAdmin").notNullable()
         })
+        console.log("Table 'adminConnecte' créée! ")
     }
 }
 

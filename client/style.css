@@ -177,3 +177,21 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .submit-btn {
     margin-top: 1em;
 }
+
+.container-boutons-message {
+    display: flex;       
+    align-items: center;   
+    gap: 1em;                
+}
+
+.div-message-erreur {
+    margin-left: auto;       
+}
+
+.message-erreur {            
+    padding: 0.5em;
+}
+
+.input-filled {
+    background-color: #cce5ff; /* bleu clair */
+}

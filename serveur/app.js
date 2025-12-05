@@ -453,3 +453,128 @@ app.put('/updatePret/:idPret', async (req, res) => {
         res.status(500).json({ error: "Erreur lors de la modification du prêt" });
     }
 })
+
+/* Requête permettant d'ajouter un admin */
+app.post('/addAdmin', async (req, res) =>{
+    try { 
+        /* Récupère les champs rempli */
+        const { nomAdmin, motDePasseAdmin } = req.body
+
+        /* Les store dans une variable */
+        const admin = {
+            nomAdmin : nomAdmin,
+            motDePasseAdmin : motDePasseAdmin
+        }
+
+        /* Ajoute l'admin à la base de données */
+        await db('admin').insert(admin)
+
+        /* Renvoie l'admin rajouté au client */
+        res.status(200).json(admin)
+
+    } catch (error) {
+
+        /* Affiche une erreur côté serveur si c'est le cas */
+        console.error("Erreur lors de l'ajout d'un nouvel admin", error)
+        res.status(500).json({ err: "Erreur serveur" })
+    }
+})
+
+/* Requête permettant de récupérer tout les admin */
+app.get('/getAdmins', async (req, res) => {
+    try {
+
+        /* Récupère les admin de la base de données */
+        admins = await db('admin').select('*')
+
+        /* Renvoie la réponse au client */
+        res.status(200).json(admins)
+
+    } catch (error) {
+
+        /* Affiche une erreur côté serveur si c'est le cas */
+        console.error("Erreur lors de la récupération des admins", error)
+        res.status(500).json({ err: "Erreur serveur" })
+    }
+})
+
+/* Requête permettant d'ajouter un admin à la table adminConnecte */
+app.post('/addAdminConnecte', async (req, res) =>{
+    try { 
+        /* Récupère les champs rempli */
+        const { idAdminConnecte, nomAdminConnecte, motDePasseAdmin } = req.body
+
+        /* Les store dans une variable */
+        const adminConnecte = {
+            idAdminConnecte : idAdminConnecte,
+            nomAdminConnecte : nomAdminConnecte,
+            motDePasseAdmin : motDePasseAdmin
+        }
+
+        /* Ajoute l'admin à la base de données */
+        await db('adminConnecte').insert(adminConnecte)
+
+        /* Renvoie une reponse avec l'admin connecté */
+        res.status(200).json(adminConnecte)
+
+    } catch (error) {
+
+        /* Affiche une erreur côté serveur si c'est le cas */
+        console.error("Erreur lors de l'ajout d'un nouvel admin", error)
+        res.status(500).json({ err: "Erreur serveur" })
+    }
+})
+
+/* Requête permettant de récupérer l'admin connecté */
+app.get('/getAdminConnecte', async (req, res) => {
+    try {
+
+        /* Récupère l'adim de la base de données */
+        adminConnecte = await db('adminConnecte').select('*').first()
+
+        /* Renvoie la réponse au client */
+        res.status(200).json(adminConnecte)
+
+    } catch (error) {
+
+        /* Affiche une erreur côté serveur si c'est le cas */
+        console.error("Erreur lors de la récupération des admins", error)
+        res.status(500).json({ err: "Erreur serveur" })
+    }
+})
+
+/* Requête permettant de vider la table adminConnecte */
+app.delete('/delAdminConnecte', async (req, res) => {
+    try {
+
+        /* Vide la table adminConnecte */
+        await db('adminConnecte').del();
+
+        /* Renvoie une réponse au client */
+        res.status(200).json("Vidage de la table adminConnecte réussi")
+
+    } catch (error) {
+
+        /* Affiche une erreur côté serveur si c'est le cas */
+        console.error("Erreur lors du vidage de la table adminConnecte", error)
+        res.status(500).json({ err: "Erreur serveur" })
+    }   
+})
+
+/* Chaque fois que le serveur est redémarré, on vide la table adminConnecte */
+async function viderTableAdminConnecte() {
+    try {
+
+        /* Vide la table adminConnecte */
+        await db('adminConnecte').del();
+        console.log("Vidage de la table adminConnecte réussi");
+
+    } catch (error) {
+
+        /* Affiche une erreur si c'est le cas */
+        console.error("Erreur lors du vidage de la table adminConnecte :", error);
+    }
+}
+
+/* Appelle la fonction au démarrage du serveur */
+viderTableAdminConnecte();
