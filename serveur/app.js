@@ -389,7 +389,6 @@ app.put('/updateRetard/:idPret', async (req, res) => {
         }*/
         const prets = await db('prets').select('*').where({ idPret: idPret }).first()
         if (!prets) {
-            console.log("Aucun pret trouvé")
             return res.status(404).json({ message: "Aucun pret trouvé" })
         }
         
@@ -400,13 +399,7 @@ app.put('/updateRetard/:idPret', async (req, res) => {
         const diffMs = Date.now() - datePaiement.getTime();
         const diffJours = diffMs / (1000 * 60 * 60 * 24);
         
-        const datePret = prets.dateDebut 
-        console.log("diff jours : ", diffJours)
-        console.log("format date : ", datePret)
-        console.log("date debut pret : ", prets.dateDebut)
-        console.log("duree pret : ", prets.duree)
-        console.log("date fin : ", (datePret.setMonth(datePret.getMonth() + prets.duree)))
-
+        const datePret = new Date(prets.dateDebut) 
 
         // si pas remboursé au complet
         if (prets.montant > 0) {

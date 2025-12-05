@@ -36,15 +36,26 @@ function calculateLoan(montantRestant, interet, nbreMois) {
 const filterButton = document.getElementById('buttonTrierPrets')
 const statusFilter = document.getElementById('satut')
 const nameFilter = document.getElementById('nomClient')
+const decFilter = document.getElementById('decroissant')
 
 filterButton.addEventListener('click', async () => {
     if (filterButton.textContent == "Rechercher") {
         filterButton.textContent = "Réinitialiser la liste"
-        if (statusFilter.checked) {
-            prets.sort((a, b) => a.statut.localeCompare(b.statut))
+        if (decFilter.checked){
+            if (statusFilter.checked) {
+                prets.sort((a, b) => b.statut.localeCompare(a.statut))
+            }
+            else if (nameFilter.checked) {
+                prets.sort((a, b) => b.prenom.localeCompare(a.prenom))
+            }
         }
-        else if (nameFilter.checked) {
-            prets.sort((a, b) => b.prenom.localeCompare(a.prenom))
+        else {
+            if (statusFilter.checked) {
+                prets.sort((a, b) => a.statut.localeCompare(b.statut))
+            }
+            else if (nameFilter.checked) {
+                prets.sort((a, b) => a.prenom.localeCompare(b.prenom))
+            } 
         }
         await loadTable()
 
@@ -146,6 +157,7 @@ async function loadTable() {
             if (!updateRetard.ok) {
                 throw new Error("Erreur côté serveur")
             }
+            await loadPrets()
             const row = document.createElement("tr")
             row.innerHTML = `
             <td>${p.idPret}</td>
