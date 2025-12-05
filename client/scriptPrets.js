@@ -46,11 +46,12 @@ filterButton.addEventListener('click', async () => {
         else if (nameFilter.checked) {
             prets.sort((a, b) => b.prenom.localeCompare(a.prenom))
         }
-        load()
+        await loadTable()
+
     }
     // pourrait juste mettre un else mais juste pour etre sur
     else if (filterButton.textContent == "Réinitialiser la liste") {
-        load()
+        await loadTable()
         filterButton.textContent = "Rechercher"
         statusFilter.checked = false
         nameFilter.checked = false
@@ -78,7 +79,8 @@ bouttonSave.addEventListener('click', async () => {
         // reset tous les champs et focus le montant du pret, refresh aussi tous les prets
         clearForm()
         montantPret.focus()
-        load()
+        await loadPrets()
+        await loadTable()
     }
     // si non, il est en "mode edit" et on change ses actions
     else {
@@ -96,9 +98,13 @@ bouttonSave.addEventListener('click', async () => {
         if (!mod.ok) {
             throw new Error("Erreur du côté serveur")
         }
-        load()
+        await loadPrets()
+        await loadTable()
         montantPret.focus()
-
+        clearForm()
+        bouttonSave.textContent = "Enregistrer le prêt"
+        bouttonDelete.innerHTML = "";
+        bouttonQuit.innerHTML = "";
     }
 })
 
@@ -134,7 +140,7 @@ async function loadTable() {
                               </tr>`
 
     try {
-        prets.forEach(async (p) => {
+        for (const p of prets) {
             //update du statut du pret (ACTIF, RETARD, REMBOURSÉ)
             const updateRetard = await fetch(`/updateRetard/${p.idPret}`, { method: 'PUT' })
             if (!updateRetard.ok) {
@@ -199,7 +205,9 @@ async function loadTable() {
                     // Réinitialise les champs pour le prochain pret
                     clearForm()
                     // reload des infos                     
-                    load()
+                    await loadPrets()
+                    await loadTable()
+
 
                     // Vide le message de confirmation après 2 secondes 
                     setTimeout(() => {
@@ -220,9 +228,8 @@ async function loadTable() {
                     // Réinitialise les champs pour le prochain pret
                     clearForm()
                 })
-            }
-            )
-        })
+            })
+        }
     }
     catch (err) {
         console.error(err)

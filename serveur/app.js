@@ -159,7 +159,7 @@ app.get('/getPrets', async (req, res) => {
             .join("clients", "clients.id", "prets.idClient")
             .select("prets.*", "clients.prenom")
             .orderBy("idPret", "desc")
-            res.status(200).json(resultat)
+        res.status(200).json(resultat)
     }
     catch (err) {
         console.error("Erreur /getPrets", err)
@@ -377,37 +377,48 @@ app.get('/getAdminConnecte', async (req, res) => {
 
 // pour vérifier si le payement est en retard
 app.put('/updateRetard/:idPret', async (req, res) => {
+    console.log("au moins tu t'es rendu la")
     try {
         const { idPret } = req.params
         // selectionne le dernier payement
         const payement = await db('paiements').max('datePaiement as datePaiement').where({ idPret: idPret }).first()
         // si erreur
-        if (!payement || !payement.datePaiement) {
+        /*if (!payement || !payement.datePaiement) {
+            // code 200 puisqu'il est très possible qu'il n'y ait aucun paiement mais devrait pas causer une erreur en tant que tel
             res.status(200).json({ message: "Aucun paiement trouvé pour ce prêt" })
-            return
+        }*/
+        const prets = await db('prets').select('*').where({ idPret: idPret }).first()
+        if (!prets) {
+            console.log("Aucun pret trouvé")
+            return res.status(404).json({ message: "Aucun pret trouvé" })
         }
-        const datePaiement = new Date(payement.datePaiement)
-
+        
+        var datePaiement = new Date(payement.datePaiement)
+        if (!payement.datePaiement){
+            datePaiement = new Date()
+        }
         const diffMs = Date.now() - datePaiement.getTime();
         const diffJours = diffMs / (1000 * 60 * 60 * 24);
+        
+        const datePret = prets.dateDebut 
+        console.log("diff jours : ", diffJours)
+        console.log("format date : ", datePret)
+        console.log("date debut pret : ", prets.dateDebut)
+        console.log("duree pret : ", prets.duree)
+        console.log("date fin : ", (datePret.setMonth(datePret.getMonth() + prets.duree)))
 
-        //si plus de 31 jours depuis dernier payement
-        if (diffJours > 31) {
-            // select montant restant du pret
-            const pret = await db('prets').select('montant').where({ idPret: idPret }).first()
-            // si erreur
-            if (!pret) {
-                return res.status(200).json("Erreur lors de la recherche du pret")
-            }
-            // si pas remboursé au complet
-            if (pret.montant > 0) {
+
+        // si pas remboursé au complet
+        if (prets.montant > 0) {
+            //si plus de 31 jours depuis dernier payement ou si date limite dépassée
+            if (diffJours > 31 || (new Date(datePret.setMonth(datePret.getMonth() + prets.duree))).getTime() < new Date().getTime()) {
                 await db('prets').where({ idPret }).update({ statut: "Retard" })
             }
+            return res.status(200).json({ message: "Statut du prêt mis à jour" });
         }
-        return res.status(200).json({ message: "Statut du prêt mis à jour" });
     }
-    catch {
-        console.error("Erreur lors de la mise à jour du statut du prêt");
+    catch (error){
+        console.error("Erreur lors de la mise à jour du statut du prêt", error);
         res.status(500).json({ error: "Erreur serveur" })
     }
 })
@@ -455,15 +466,15 @@ app.put('/updatePret/:idPret', async (req, res) => {
 })
 
 /* Requête permettant d'ajouter un admin */
-app.post('/addAdmin', async (req, res) =>{
-    try { 
+app.post('/addAdmin', async (req, res) => {
+    try {
         /* Récupère les champs rempli */
         const { nomAdmin, motDePasseAdmin } = req.body
 
         /* Les store dans une variable */
         const admin = {
-            nomAdmin : nomAdmin,
-            motDePasseAdmin : motDePasseAdmin
+            nomAdmin: nomAdmin,
+            motDePasseAdmin: motDePasseAdmin
         }
 
         /* Ajoute l'admin à la base de données */
@@ -499,16 +510,16 @@ app.get('/getAdmins', async (req, res) => {
 })
 
 /* Requête permettant d'ajouter un admin à la table adminConnecte */
-app.post('/addAdminConnecte', async (req, res) =>{
-    try { 
+app.post('/addAdminConnecte', async (req, res) => {
+    try {
         /* Récupère les champs rempli */
         const { idAdminConnecte, nomAdminConnecte, motDePasseAdmin } = req.body
 
         /* Les store dans une variable */
         const adminConnecte = {
-            idAdminConnecte : idAdminConnecte,
-            nomAdminConnecte : nomAdminConnecte,
-            motDePasseAdmin : motDePasseAdmin
+            idAdminConnecte: idAdminConnecte,
+            nomAdminConnecte: nomAdminConnecte,
+            motDePasseAdmin: motDePasseAdmin
         }
 
         /* Ajoute l'admin à la base de données */
@@ -558,7 +569,7 @@ app.delete('/delAdminConnecte', async (req, res) => {
         /* Affiche une erreur côté serveur si c'est le cas */
         console.error("Erreur lors du vidage de la table adminConnecte", error)
         res.status(500).json({ err: "Erreur serveur" })
-    }   
+    }
 })
 
 /* Chaque fois que le serveur est redémarré, on vide la table adminConnecte */
