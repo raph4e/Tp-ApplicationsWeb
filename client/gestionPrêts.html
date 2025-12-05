@@ -63,7 +63,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Entrée du montant du prêt -->
                 <!-- mettre un max? min + haut que 0? -->
                 <div class="field is-horizontal sectionInput">
@@ -136,7 +136,7 @@
                     </div>
                 </div>
                 <!-- Bouton enregistrer -->
-                <button class="button is-primary" id="savePret">Enregister le prêt</button>
+                <button class="button is-primary" id="savePret">Enregistrer le prêt</button>
                 <!-- Bouton supprimer -->
                 <div class="div-bouton-supprimer" id="bouttonSupprimer"></div>
                 <!-- Bouton quitter -->
@@ -158,6 +158,22 @@
                 </div>
             </div>
             <div class="selection"></div>
+            <!--Filtres-->
+            <div class="trier box">
+                <h1 class="title titleColor">Trier</h1>
+                <div class="checkboxes">
+                    <label class="checkbox">
+                        <input type="radio" name="trier" id="satut" value="statut" />
+                        Par statut
+                    </label>
+                    <label class="checkbox">
+                        <input type="radio" name="trier" id="nomClient" value="nomClient" />
+                        Par nom de client
+                    </label>
+                </div>
+                <button class="button is-primary" id="buttonTrierPrets" style="margin-top: 0.8em;">Rechercher</button>
+                <div id="messageErreurTrier"></div>
+            </div>
         </div>
 
     </main>

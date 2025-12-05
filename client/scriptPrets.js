@@ -12,9 +12,11 @@ const bouttonQuit = document.getElementById("bouttonQuitter")
 const messageConfirmation = document.getElementById("msgConfirmation")
 const idPretHidden = document.getElementById('idPret')
 
+var prets = []
+
 async function loadPrets() {
     const res = await fetch('http://localhost:3000/getPrets');
-    const prets = await res.json();
+    prets = await res.json();
 }
 
 function clearForm() {
@@ -31,11 +33,34 @@ function calculateLoan(montantRestant, interet, nbreMois) {
     return payement
 }
 
+const filterButton = document.getElementById('buttonTrierPrets')
+const statusFilter = document.getElementById('satut')
+const nameFilter = document.getElementById('nomClient')
+
+filterButton.addEventListener('click', async () => {
+    if (filterButton.textContent == "Rechercher") {
+        filterButton.textContent = "Réinitialiser la liste"
+        if (statusFilter.checked) {
+            prets.sort((a, b) => a.statut.localeCompare(b.statut))
+        }
+        else if (nameFilter.checked) {
+            prets.sort((a, b) => b.prenom.localeCompare(a.prenom))
+        }
+        load()
+    }
+    // pourrait juste mettre un else mais juste pour etre sur
+    else if (filterButton.textContent == "Réinitialiser la liste") {
+        load()
+        filterButton.textContent = "Rechercher"
+        statusFilter.checked = false
+        nameFilter.checked = false
+    }
+})
 
 // ajout du pret dans la bd lorsqu'on clique enregistrer
 bouttonSave.addEventListener('click', async () => {
     // si le boutton est normal, effectue ses actions de base
-    if (bouttonSave.textContent == 'Enregistrer le prêt') {
+    if (bouttonSave.textContent == "Enregistrer le prêt") {
         const resultat = await fetch("/addPret", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -53,7 +78,7 @@ bouttonSave.addEventListener('click', async () => {
         // reset tous les champs et focus le montant du pret, refresh aussi tous les prets
         clearForm()
         montantPret.focus()
-        await loadPrets()
+        load()
     }
     // si non, il est en "mode edit" et on change ses actions
     else {
@@ -61,20 +86,19 @@ bouttonSave.addEventListener('click', async () => {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                idClient: dropDownMenuNomClients.value, 
+                idClient: dropDownMenuNomClients.value,
                 montantPret: parseFloat(montantPret.value),
                 interet: parseFloat(interet.value),
                 duree: parseInt(dureePret.value),
                 dateDebut: dateDebut.value
             })
         })
-        if (!mod.ok){
+        if (!mod.ok) {
             throw new Error("Erreur du côté serveur")
         }
-        clearForm()
-        loadPrets()
-        loadTable()
+        load()
         montantPret.focus()
+
     }
 })
 
@@ -102,6 +126,7 @@ async function loadTable() {
     // vider le tableau en premier
     tableauPrets.innerHTML = `<tr>
                                 <th>ID Prêt</th>
+                                <th>Nom du client</th>
                                 <th>Intérêts totaux</th>
                                 <th>Solde restant</th>
                                 <th>Prochain paiement</th>
@@ -109,12 +134,7 @@ async function loadTable() {
                               </tr>`
 
     try {
-        const prets = await fetch('/getPrets')
-        if (!prets.ok) {
-            throw new Error("Erreur côté serveur")
-        }
-        const listePrets = await prets.json()
-        listePrets.forEach(async (p) => {
+        prets.forEach(async (p) => {
             //update du statut du pret (ACTIF, RETARD, REMBOURSÉ)
             const updateRetard = await fetch(`/updateRetard/${p.idPret}`, { method: 'PUT' })
             if (!updateRetard.ok) {
@@ -123,6 +143,7 @@ async function loadTable() {
             const row = document.createElement("tr")
             row.innerHTML = `
             <td>${p.idPret}</td>
+            <td>${p.prenom}</td>
             <td>${(calculateLoan(p.montant, p.interet, p.duree) * p.duree - p.montantInitial).toFixed(2)}$</td>
             <td>${(calculateLoan(p.montant, p.interet, p.duree) * p.duree).toFixed(2)}$</td>
             <td>${(calculateLoan(p.montant, p.interet, p.duree)).toFixed(2)}$</td>
@@ -158,14 +179,8 @@ async function loadTable() {
                 // Fonction lorsque le bouton supprimer est cliqué 
                 boutonSupprimer.addEventListener("click", async (event) => {
                     // Empêche le comportement de base du bouton 
-                    event.preventDefault();
-                    event.stopPropagation();
-
-
-                    // Supprime le client de la liste clients 
-                    // clients = clients.filter((client) => client.id !== c.id);
-                    // pas besoin???
-
+                    event.preventDefault()
+                    event.stopPropagation()
 
                     // Appelle de la requête qui supprime le pret de la base de données 
                     const res = await fetch(`/deletePret/${pretModifie.idPret}`, { method: 'DELETE' })
@@ -177,16 +192,14 @@ async function loadTable() {
                     // Message de confirmation 
                     messageConfirmation.textContent = "Client supprimé avec succès!";
                     // Change la valeur du bouton enregistrer pret 
-                    bouttonSave.textContent = "Enregister le prêt";
+                    bouttonSave.textContent = "Enregistrer le prêt";
                     // Retire le bouton supprimer et le bouton quitter 
                     bouttonDelete.innerHTML = "";
                     bouttonQuit.innerHTML = "";
                     // Réinitialise les champs pour le prochain pret
                     clearForm()
                     // reload des infos                     
-                    loadPrets()
-                    loadClients()
-                    loadTable()
+                    load()
 
                     // Vide le message de confirmation après 2 secondes 
                     setTimeout(() => {
@@ -200,7 +213,7 @@ async function loadTable() {
                     event.preventDefault();
                     event.stopPropagation();
                     // Change la valeur du bouton enregistrer client 
-                    bouttonSave.textContent = "Enregister le prêt";
+                    bouttonSave.textContent = "Enregistrer le prêt";
                     // Retire le bouton supprimer et le bouton quitter 
                     bouttonDelete.innerHTML = "";
                     bouttonQuit.innerHTML = "";
@@ -218,8 +231,10 @@ async function loadTable() {
 }
 
 
+async function load() {
+    await loadPrets()
+    await loadClients()
+    await loadTable()
+}
 
-
-loadPrets()
-loadClients()
-loadTable()
+load()
