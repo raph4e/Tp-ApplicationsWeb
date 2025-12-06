@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +9,7 @@
     <link rel="stylesheet" href="https://bulma.io/vendor/fontawesome-free-6.5.2-web/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <main>
         <!--Sidebar-->
@@ -17,6 +19,11 @@
                     <i class="fa-solid fa-blog fa-10x"></i>
                 </p>
                 <ul class="menu-list">
+                    <div class="lien-sidebar">
+                        <li>
+                            <a href="dashboard.html" class="button bouttonSideBar">Tableau de bord</a>
+                        </li>
+                    </div>
                     <div class="lien-sidebar">
                         <li>
                             <a href="gestionClients.html" class="button bouttonSideBar">Clients</a>
@@ -35,9 +42,101 @@
                 </ul>
             </aside>
         </div>
-               
-        <div class="dashboard"></div>
+        <div class="container dashboard">
+            <div class="columns">
+                <div class="column is-12">
+                    <div class="titreDashboard">
+                        <section class="hero is-info welcome is-small">
+                            <div class="hero-body">
+                                <div class="container">
+                                    <h1 class="title">
+                                        Bonjour,
+                                    </h1>
+                                    <h2 class="subtitle">
+                                        Voici le survol des prêts à ce jour!
+                                    </h2>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                    <section class="info-tiles">
+                        <div class="grid has-text-centered">
+                            <div class="cell">
+                                <article class="box has-background-primary">
+                                    <p class="title" id="nbreActifs"></p>
+                                    <p class="subtitle has-text-white-bis">Prêts actifs</p>
+                                </article>
+                            </div>
+                            <div class="cell">
+                                <article class="box has-background-success">
+                                    <p class="title" id="nbreRembourse"></p>
+                                    <p class="subtitle has-text-white-bis">Prêts remboursés</p>
+                                </article>
+                            </div>
+                            <div class="cell">
+                                <article class="box has-background-danger">
+                                    <p class="title" id="nbreRetards"></p>
+                                    <p class="subtitle has-text-white-bis">Prêts en retard</p>
+                                </article>
+                            </div>
+                            <div class="cell">
+                                <article class="box has-background-grey-light">
+                                    <p class="title" id="nbrePrete"></p>
+                                    <p class="subtitle has-text-white-bis">Total prêté ($)</p>
+                                </article>
+                            </div>
+                            <div class="cell">
+                                <article class="box has-background-grey-dark">
+                                    <p class="title" id="totalRembourse"></p>
+                                    <p class="subtitle has-text-white-bis">Total remboursé ($)</p>
+                                </article>
+                            </div>
+                        </div>
+                    </section>
+                    <div class="columns">
+                        <div class="column is-8">
+                            <div class="sousSectionDashboard">
+                                <div class="card events-card">
+                                    <header class="card-header">
+                                        <p class="card-header-title">
+                                            Clients en retard
+                                        </p>
+                                        <span class="card-header-icon">
+                                            <a id="refresh">
+                                                <i class="fa-solid fa-arrows-rotate"></i>
+                                            </a>
+                                        </span>
+                                    </header>
+                                    <div class="card-table">
+                                        <div class="content">
+                                            <table class="table is-fullwidth is-striped" id="tableRetards">
+                                                <tbody>
+                                                    <tr>
+                                                        <td>Lorum ipsum dolem aire</td>
+                                                        <td class="level-right"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Lorum ipsum dolem aire</td>
+                                                        <td class="level-right"></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <footer class="card-footer">
+                                        <a href="gestionPrêts.html" class="card-footer-item">
+                                            Voir tous les paiements en retard
+                                        </a>
+                                    </footer>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </main>
 </body>
 <script src="scriptDashboard.js"></script>
+
 </html>

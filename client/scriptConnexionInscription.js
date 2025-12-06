@@ -131,7 +131,7 @@ window.addEventListener('DOMContentLoaded', async () => {
                         connexionReussie = true
 
                         /* Indique au client si c'est le cas */
-                        messageErreur.textContent = "Connexion réussi! Redirection..."
+                        messageErreur.textContent = "Connexion réussie! Redirection..."
 
                         /* Change la couleur du message d'erreur */
                         messageErreur.style.color = "green";

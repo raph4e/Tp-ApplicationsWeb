@@ -458,6 +458,39 @@ app.put('/updatePret/:idPret', async (req, res) => {
     }
 })
 
+app.get('/getPretsActifs', async (req, res)=>{
+    try{
+        const prets = await db('prets').where({statut: "Actif"}) 
+        res.status(200).json(prets)
+    }
+    catch(error){
+        console.error("Erreur lors de la récupération des prets actifs : ", error)
+        res.status(500).json({ err: "Erreur serveur" })
+    }
+})
+
+app.get('/getPretsRetards', async (req, res)=>{
+    try{
+        const prets = await db('prets').where({statut: "Retard"}) 
+        res.status(200).json(prets)
+    }
+    catch(error){
+        console.error("Erreur lors de la récupération des prets en retard : ", error)
+        res.status(500).json({ err: "Erreur serveur" })
+    }
+})
+
+app.get('/getPretsPaye', async (req, res)=>{
+    try{
+        const prets = await db('prets').where({statut: "payé"}) 
+        res.status(200).json(prets)
+    }
+    catch(error){
+        console.error("Erreur lors de la récupération des prets payés : ", error)
+        res.status(500).json({ err: "Erreur serveur" })
+    }
+})
+
 /* Requête permettant d'ajouter un admin */
 app.post('/addAdmin', async (req, res) => {
     try {
@@ -564,6 +597,7 @@ app.delete('/delAdminConnecte', async (req, res) => {
         res.status(500).json({ err: "Erreur serveur" })
     }
 })
+
 
 /* Chaque fois que le serveur est redémarré, on vide la table adminConnecte */
 async function viderTableAdminConnecte() {

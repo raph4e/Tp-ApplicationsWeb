@@ -172,7 +172,7 @@ function remplirTableau() {
 
         /* Créé une rangée du tableau pour chaque client */
         rangee.innerHTML = `
-            <td>${p.idPrêt}</td>
+            <td>${p.idPret}</td>
             <td>${p.montantPaye}</td>
             <td>${p.datePaiement}</td>
             <td>${p.modePaiement}</td>
