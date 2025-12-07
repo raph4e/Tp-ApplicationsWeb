@@ -35,6 +35,20 @@ main {
     background-color: #30a2d6;
     border-right: solid 0.3em black;
     padding-right: 2em;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar .menu {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.menu-list {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
 
 .lien-sidebar {
@@ -50,6 +64,11 @@ main {
 .menu-logo {
     margin-left: 25%;
     margin-top: 2.5em;
+}
+
+.bouton-deconnexion {
+    margin-top: auto;
+    margin-bottom: 2em;
 }
 
 /* Partie pour l'ajout de nouveaux prêts, clients, paiements, etc... */

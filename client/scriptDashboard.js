@@ -39,6 +39,8 @@ async function loadDashboard() {
     totalRembourse.textContent = paiements.reduce((sum, item) => sum + item.montantPaye, 0).toFixed(0)
 }
 
+loadDashboard()
+
 async function loadTable() {
     
 }
@@ -63,5 +65,26 @@ window.addEventListener('DOMContentLoaded', async () => {
     }
 })
 
+/* S'éxécute lorsque le bouton déconnexion est cliqué */
+const buttonDeconnexion = document.getElementById("buttonDeconnexion")
 
-loadDashboard()
+buttonDeconnexion.addEventListener('click', async () => {
+    try {
+
+        /* Vide la table adminConnecte */
+        await fetch('/delAdminConnecte');
+
+        /* Redirige vers la page de connexion */
+        window.location.href = 'connexion-inscription.html';
+
+    } catch (error) {
+
+        /* Envoie une erreur si c'est le cas */
+        console.error("Erreur lors de la déconnexion", error)
+
+        /* L'indique côté client */
+        messageConfirmation.textContent = "Erreur lors de la déconnexion de l'admin connecté";
+    }
+})
+
+

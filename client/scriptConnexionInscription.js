@@ -112,6 +112,10 @@ window.addEventListener('DOMContentLoaded', async () => {
 
             } else {
 
+                /* Store les infos entrées dans un cookie */
+                document.cookie = `nomAdmin=${encodeURIComponent(nomAdmin.value)}; path=/`;
+                document.cookie = `motDePasseAdmin=${encodeURIComponent(motDePasseAdmin.value)}; path=/`;
+
                 /* Créé une liste vide pour les admins */
                 let admins = []
 
