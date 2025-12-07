@@ -132,7 +132,7 @@ savePaiement.addEventListener('click', async ()=> {
     catch (error) {
 
         /* Envoie une erreur si c'est le cas */
-        console.error("Erreur fetch /addPeiment", error)
+        console.error("Erreur fetch /addPaiement", error)
 
         /* L'indique côté client */
         messageConfirmation.textContent = "Erreur lors de l'ajout du paiement.";
@@ -182,3 +182,25 @@ function remplirTableau() {
         tableauPaiements.appendChild(rangee);
     })
 }
+
+/* S'éxécute lorsque le bouton déconnexion est cliqué */
+const buttonDeconnexion = document.getElementById("buttonDeconnexion")
+
+buttonDeconnexion.addEventListener('click', async () => {
+    try {
+
+        /* Vide la table adminConnecte */
+        await fetch('/delAdminConnecte');
+
+        /* Redirige vers la page de connexion */
+        window.location.href = 'connexion-inscription.html';
+
+    } catch (error) {
+
+        /* Envoie une erreur si c'est le cas */
+        console.error("Erreur lors de la déconnexion", error)
+
+        /* L'indique côté client */
+        messageConfirmation.textContent = "Erreur lors de la déconnexion de l'admin connecté";
+    }
+})
