@@ -17,8 +17,8 @@ reload.addEventListener('click', async () => {
 async function loadDashboard() {
     //récupère les routes
     const resultatActifs = await fetch('/getPretsActifs')
-    const resultatRembourse = await fetch('/getPretsRetards')
-    const resultatRetards = await fetch('/getPretsPaye')
+    const resultatRembourse = await fetch('/getPretsPaye')
+    const resultatRetards = await fetch('/getPretsRetards')
     //si erreur dans une 
     if (!resultatActifs.ok || !resultatRembourse.ok || !resultatRetards.ok) {
         throw new Error("Erreur du côté serveur")
