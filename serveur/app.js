@@ -377,7 +377,6 @@ app.get('/getAdminConnecte', async (req, res) => {
 
 // pour vérifier si le payement est en retard
 app.put('/updateRetard/:idPret', async (req, res) => {
-    console.log("au moins tu t'es rendu la")
     try {
         const { idPret } = req.params
         // selectionne le dernier payement

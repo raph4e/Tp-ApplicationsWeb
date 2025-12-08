@@ -11,8 +11,15 @@ const bouttonDelete = document.getElementById("bouttonSupprimer")
 const bouttonQuit = document.getElementById("bouttonQuitter")
 const messageConfirmation = document.getElementById("msgConfirmation")
 const idPretHidden = document.getElementById('idPret')
+const paginationList = document.getElementById('pagination')
 
+// stocke globalement les prets, une sous liste des prets et le tab actif présentement
 var prets = []
+var sousListe = []
+var presentTab = 1
+
+// gère le nombre d'items par page globalement
+const pretsParPage = 5
 
 async function loadPrets() {
     const res = await fetch('http://localhost:3000/getPrets');
@@ -33,6 +40,7 @@ function calculateLoan(montantRestant, interet, nbreMois) {
     return payement
 }
 
+
 const filterButton = document.getElementById('buttonTrierPrets')
 const statusFilter = document.getElementById('satut')
 const nameFilter = document.getElementById('nomClient')
@@ -41,7 +49,7 @@ const decFilter = document.getElementById('decroissant')
 filterButton.addEventListener('click', async () => {
     if (filterButton.textContent == "Rechercher") {
         filterButton.textContent = "Réinitialiser la liste"
-        if (decFilter.checked){
+        if (decFilter.checked) {
             if (statusFilter.checked) {
                 prets.sort((a, b) => b.statut.localeCompare(a.statut))
             }
@@ -55,7 +63,7 @@ filterButton.addEventListener('click', async () => {
             }
             else if (nameFilter.checked) {
                 prets.sort((a, b) => a.prenom.localeCompare(b.prenom))
-            } 
+            }
         }
         await loadTable()
 
@@ -139,19 +147,86 @@ async function loadClients() {
     }
 }
 
+function tabs(tabNumber) {
+    var subList = []
+    subList = prets.slice((tabNumber - 1) * pretsParPage, tabNumber * pretsParPage)
+    return subList
+}
+
 async function loadTable() {
+    const nbreTabs = Math.ceil(prets.length / pretsParPage)
+
+    if (presentTab > nbreTabs) {
+        presentTab = nbreTabs
+    }
+    // affecte une premiere sous liste
+    sousListe = tabs(presentTab)
     // vider le tableau en premier
     tableauPrets.innerHTML = `<tr>
-                                <th>ID Prêt</th>
-                                <th>Nom du client</th>
-                                <th>Intérêts totaux</th>
-                                <th>Solde restant</th>
-                                <th>Prochain paiement</th>
-                                <th>Statut</th>
-                              </tr>`
+    <th>ID Prêt</th>
+    <th>Nom du client</th>
+    <th>Intérêts totaux</th>
+    <th>Solde restant</th>
+    <th>Prochain paiement</th>
+    <th>Statut</th>
+    </tr>`
+    // vide aussi la pagination comme ca si suppression ca reset
+    paginationList.innerHTML = ""
 
     try {
-        for (const p of prets) {
+        if (prets.length > pretsParPage) {
+            const prevTab = document.createElement("a")
+            prevTab.innerHTML = "&laquo;"
+            prevTab.addEventListener('click', (e) => {
+                e.preventDefault()
+                if (presentTab > 1) {
+                    presentTab--
+                    sousListe = tabs(presentTab)
+                    loadTable()
+                }
+            })
+            paginationList.appendChild(prevTab)
+
+
+            for (let i = 1; i <= nbreTabs; i++) {
+                const tab = document.createElement("a")
+                tab.innerHTML = `${i}`
+                tab.dataset.page = i
+                
+                // ajoute la classe active au bon tab et l'enleve des autres, donne un style different
+                if (i == presentTab) {
+                    tab.classList.add("active")
+                }
+                else{
+                    tab.classList.remove("active")
+                }
+                
+                paginationList.appendChild(tab)
+                
+                tab.addEventListener('click', (e) => {
+                    e.preventDefault()
+
+                    // change la variable globale stockant le num de tab
+                    presentTab = Number(e.target.dataset.page)
+                    sousListe = tabs(presentTab)
+                    loadTable()
+                })
+
+            }
+            const nextTab = document.createElement("a")
+            nextTab.innerHTML = "&raquo;"
+            nextTab.addEventListener('click', (e) => {
+                e.preventDefault()
+                // check pour si jamais on est pas déjà à la dernière page
+                if (presentTab < nbreTabs) {
+                    presentTab++
+                    sousListe = tabs(presentTab)
+                    loadTable()
+                }
+            })
+            paginationList.appendChild(nextTab)
+        }
+        for (const p of sousListe) {
             //update du statut du pret (ACTIF, RETARD, REMBOURSÉ)
             const updateRetard = await fetch(`/updateRetard/${p.idPret}`, { method: 'PUT' })
             if (!updateRetard.ok) {
@@ -160,16 +235,17 @@ async function loadTable() {
             await loadPrets()
             const row = document.createElement("tr")
             row.innerHTML = `
-            <td>${p.idPret}</td>
-            <td>${p.prenom}</td>
-            <td>${(calculateLoan(p.montant, p.interet, p.duree) * p.duree - p.montantInitial).toFixed(2)}$</td>
-            <td>${(calculateLoan(p.montant, p.interet, p.duree) * p.duree).toFixed(2)}$</td>
-            <td>${(calculateLoan(p.montant, p.interet, p.duree)).toFixed(2)}$</td>
-            <td>${p.statut}
-            <td>
+                <td>${p.idPret}</td>
+                <td>${p.prenom}</td>
+                <td>${(calculateLoan(p.montant, p.interet, p.duree) * p.duree - p.montantInitial).toFixed(2)}$</td>
+                <td>${(calculateLoan(p.montant, p.interet, p.duree) * p.duree).toFixed(2)}$</td>
+                <td>${(calculateLoan(p.montant, p.interet, p.duree)).toFixed(2)}$</td>
+                <td>${p.statut}
+                <td>
                 <button class="selectionner button card-footer-item">Sélectionner</button>
-            </td>
-            `
+                </td>
+                `
+
             // ajoute la rangée au tableau
             tableauPrets.appendChild(row)
 
@@ -187,7 +263,7 @@ async function loadTable() {
                 idPretHidden.value = p.idPret
 
                 bouttonSave.textContent = "Modifier et quitter la sélection";
-                pretModifie = p
+                let pretModifie = p
                 bouttonDelete.innerHTML = '<button class="bouton-supprimer button is-primary">Supprimer et quitter la sélection</button>'
                 bouttonQuit.innerHTML = '<button class="bouton-quitter button is-primary">Quitter la sélection</button>'
                 // Supprime un pret lorsque le bouton supprimer est cliqué 
