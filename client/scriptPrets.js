@@ -22,8 +22,16 @@ var presentTab = 1
 const pretsParPage = 5
 
 async function loadPrets() {
-    const res = await fetch('http://localhost:3000/getPrets');
-    prets = await res.json();
+    const res = await fetch('http://localhost:3000/getPrets')
+    prets = await res.json()
+}
+
+//update du statut du pret (ACTIF, RETARD, REMBOURSÉ)
+async function updateStatut() {
+    const updateRetard = await fetch('/updateRetard', { method: 'PUT' })
+    if (!updateRetard.ok) {
+        throw new Error("Erreur côté serveur")
+    }
 }
 
 function clearForm() {
@@ -122,8 +130,8 @@ bouttonSave.addEventListener('click', async () => {
         montantPret.focus()
         clearForm()
         bouttonSave.textContent = "Enregistrer le prêt"
-        bouttonDelete.innerHTML = "";
-        bouttonQuit.innerHTML = "";
+        bouttonDelete.innerHTML = ""
+        bouttonQuit.innerHTML = ""
     }
 })
 
@@ -146,6 +154,8 @@ async function loadClients() {
         alert("Impossible d'afficher les clients")
     }
 }
+
+
 
 function tabs(tabNumber) {
     var subList = []
@@ -192,17 +202,17 @@ async function loadTable() {
                 const tab = document.createElement("a")
                 tab.innerHTML = `${i}`
                 tab.dataset.page = i
-                
+
                 // ajoute la classe active au bon tab et l'enleve des autres, donne un style different
                 if (i == presentTab) {
                     tab.classList.add("active")
                 }
-                else{
+                else {
                     tab.classList.remove("active")
                 }
-                
+
                 paginationList.appendChild(tab)
-                
+
                 tab.addEventListener('click', (e) => {
                     e.preventDefault()
 
@@ -227,12 +237,6 @@ async function loadTable() {
             paginationList.appendChild(nextTab)
         }
         for (const p of sousListe) {
-            //update du statut du pret (ACTIF, RETARD, REMBOURSÉ)
-            const updateRetard = await fetch(`/updateRetard/${p.idPret}`, { method: 'PUT' })
-            if (!updateRetard.ok) {
-                throw new Error("Erreur côté serveur")
-            }
-            await loadPrets()
             const row = document.createElement("tr")
             row.innerHTML = `
                 <td>${p.idPret}</td>
@@ -251,9 +255,9 @@ async function loadTable() {
 
             // fonctionalité pour le boutton de selection du prêt
             row.querySelector('.selectionner').addEventListener("click", (e) => {
-                e.preventDefault();
+                e.preventDefault()
                 // Retire le message de confirmation 
-                messageConfirmation.textContent = "";
+                messageConfirmation.textContent = ""
                 // Assigne les valeurs dans les inputs 
                 dropDownMenuNomClients.value = p.idClient
                 montantPret.value = p.montantInitial
@@ -262,13 +266,13 @@ async function loadTable() {
                 dateDebut.value = p.dateDebut
                 idPretHidden.value = p.idPret
 
-                bouttonSave.textContent = "Modifier et quitter la sélection";
+                bouttonSave.textContent = "Modifier et quitter la sélection"
                 let pretModifie = p
                 bouttonDelete.innerHTML = '<button class="bouton-supprimer button is-primary">Supprimer et quitter la sélection</button>'
                 bouttonQuit.innerHTML = '<button class="bouton-quitter button is-primary">Quitter la sélection</button>'
                 // Supprime un pret lorsque le bouton supprimer est cliqué 
                 // D'abord, on récupère les boutons 
-                const boutonSupprimer = bouttonDelete.querySelector('.bouton-supprimer');
+                const boutonSupprimer = bouttonDelete.querySelector('.bouton-supprimer')
                 const boutonQuitter = bouttonQuit.querySelector('.bouton-quitter')
                 // Fonction lorsque le bouton supprimer est cliqué 
                 boutonSupprimer.addEventListener("click", async (event) => {
@@ -281,15 +285,15 @@ async function loadTable() {
                     // Envoie une erreur si le pret n'a pas été supprimé correctement 
                     if (!res.ok) { throw new Error("Erreur lors de la suppression") }
                     // Message de confirmation côté serveur 
-                    const data = await res.json();
+                    const data = await res.json()
                     console.log("Prêt supprimé côté serveur: ", data.pretSupprime)
                     // Message de confirmation 
-                    messageConfirmation.textContent = "Client supprimé avec succès!";
+                    messageConfirmation.textContent = "Client supprimé avec succès!"
                     // Change la valeur du bouton enregistrer pret 
-                    bouttonSave.textContent = "Enregistrer le prêt";
+                    bouttonSave.textContent = "Enregistrer le prêt"
                     // Retire le bouton supprimer et le bouton quitter 
-                    bouttonDelete.innerHTML = "";
-                    bouttonQuit.innerHTML = "";
+                    bouttonDelete.innerHTML = ""
+                    bouttonQuit.innerHTML = ""
                     // Réinitialise les champs pour le prochain pret
                     clearForm()
                     // reload des infos                     
@@ -299,20 +303,20 @@ async function loadTable() {
 
                     // Vide le message de confirmation après 2 secondes 
                     setTimeout(() => {
-                        messageConfirmation.textContent = "";
-                    }, 2000);
-                });
+                        messageConfirmation.textContent = ""
+                    }, 2000)
+                })
 
                 // Fonction lorsque le bouton quitté est cliqué 
                 boutonQuitter.addEventListener('click', (event) => {
                     // Empêche le comportement de base du bouton 
-                    event.preventDefault();
-                    event.stopPropagation();
+                    event.preventDefault()
+                    event.stopPropagation()
                     // Change la valeur du bouton enregistrer client 
-                    bouttonSave.textContent = "Enregistrer le prêt";
+                    bouttonSave.textContent = "Enregistrer le prêt"
                     // Retire le bouton supprimer et le bouton quitter 
-                    bouttonDelete.innerHTML = "";
-                    bouttonQuit.innerHTML = "";
+                    bouttonDelete.innerHTML = ""
+                    bouttonQuit.innerHTML = ""
                     // Réinitialise les champs pour le prochain pret
                     clearForm()
                 })
@@ -327,9 +331,11 @@ async function loadTable() {
 
 
 async function load() {
+
     await loadPrets()
     await loadClients()
     await loadTable()
+    await updateStatut()
 }
 
 load()

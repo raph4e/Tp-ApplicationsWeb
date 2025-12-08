@@ -248,18 +248,18 @@ app.post('/addPret', async (req, res) => {
         /* Ajoute le montant du prêt à la colonne montant dû du client */
         await db('clients')
             .where({ id: idClient })
-            .increment('montantDu', numPret);
+            .increment('montantDu', numPret)
 
         /* Ajoute 1 à la colonne nombre de prêts du client */
         await db('clients')
             .where({ id: idClient })
-            .increment('nombreDePrets', 1);
+            .increment('nombreDePrets', 1)
 
         const resultat = await db("prets").insert(pret)
         res.status(201).json(pret)
     }
     catch (err) {
-        console.error("Erreur /addPret", err);
+        console.error("Erreur /addPret", err)
         res.status(500).json({ error: "Erreur serveur" })
     }
 })
@@ -376,44 +376,50 @@ app.get('/getAdminConnecte', async (req, res) => {
 })
 
 // pour vérifier si le payement est en retard
-app.put('/updateRetard/:idPret', async (req, res) => {
+app.put('/updateRetard/', async (req, res) => {
     try {
-        const { idPret } = req.params
-        // selectionne le dernier payement
-        const payement = await db('paiements').max('datePaiement as datePaiement').where({ idPret: idPret }).first()
-        // si erreur
-        /*if (!payement || !payement.datePaiement) {
-            // code 200 puisqu'il est très possible qu'il n'y ait aucun paiement mais devrait pas causer une erreur en tant que tel
-            res.status(200).json({ message: "Aucun paiement trouvé pour ce prêt" })
-        }*/
-        const prets = await db('prets').select('*').where({ idPret: idPret }).first()
+        const prets = await db('prets').select('*')
         if (!prets) {
             return res.status(404).json({ message: "Aucun pret trouvé" })
         }
-        
-        var datePaiement = new Date(payement.datePaiement)
-        if (!payement.datePaiement){
-            datePaiement = new Date()
-        }
-        const diffMs = Date.now() - datePaiement.getTime();
-        const diffJours = diffMs / (1000 * 60 * 60 * 24);
-        
-        const datePret = new Date(prets.dateDebut) 
 
-        // si pas remboursé au complet
-        if (prets.montant > 0) {
-            //si plus de 31 jours depuis dernier payement ou si date limite dépassée
-            if (diffJours > 31 || (new Date(datePret.setMonth(datePret.getMonth() + prets.duree))).getTime() < new Date().getTime()) {
-                await db('prets').where({ idPret }).update({ statut: "Retard" })
+        for (const pret of prets) {
+            const paiement = await db('paiements')
+                .max('datePaiement as datePaiement')
+                .where({ idPret: pret.idPret })
+                .first()
+
+            //détermine la date de référence
+            let datePaiement
+            if (!paiement || !paiement.datePaiement) {
+                // si pas de paiement on prend today
+                datePaiement = new Date()
             }
-            return res.status(200).json({ message: "Statut du prêt mis à jour" });
+            else {
+                datePaiement = new Date(paiement.datePaiement)
+            }
+
+            const diffMs = Date.now() - datePaiement.getTime()
+            const diffJours = diffMs / (1000 * 60 * 60 * 24)
+
+            const datePret = new Date(prets.dateDebut)
+
+            // si pas remboursé au complet
+            if (prets.montant > 0) {
+                //si plus de 31 jours depuis dernier payement ou si date limite dépassée
+                if (diffJours > 31 || (new Date(datePret.setMonth(datePret.getMonth() + prets.duree))).getTime() < new Date().getTime()) {
+                    await db('prets').where({ idPret }).update({ statut: "Retard" })
+                }
+                return res.status(200).json({ message: "Statut du prêt mis à jour" })
+            }
         }
     }
-    catch (error){
-        console.error("Erreur lors de la mise à jour du statut du prêt", error);
+    catch (error) {
+        console.error("Erreur lors de la mise à jour du statut du prêt", error)
         res.status(500).json({ error: "Erreur serveur" })
     }
 })
+
 
 
 app.delete('/deletePret/:idPret', async (req, res) => {
@@ -452,40 +458,82 @@ app.put('/updatePret/:idPret', async (req, res) => {
         res.status(200).json(modification)
     }
     catch (error) {
-        console.error("Erreur lors de la modification du prêt :", error);
-        res.status(500).json({ error: "Erreur lors de la modification du prêt" });
+        console.error("Erreur lors de la modification du prêt :", error)
+        res.status(500).json({ error: "Erreur lors de la modification du prêt" })
     }
 })
 
-app.get('/getPretsActifs', async (req, res)=>{
-    try{
-        const prets = await db('prets').where({statut: "Actif"}) 
+app.get('/getPretsActifs', async (req, res) => {
+    try {
+        const prets = await db('prets').where({ statut: "Actif" })
         res.status(200).json(prets)
     }
-    catch(error){
+    catch (error) {
         console.error("Erreur lors de la récupération des prets actifs : ", error)
         res.status(500).json({ err: "Erreur serveur" })
     }
 })
 
-app.get('/getPretsRetards', async (req, res)=>{
-    try{
-        const prets = await db('prets').where({statut: "Retard"}) 
+app.get('/getPretsRetards', async (req, res) => {
+    try {
+        const prets = await db('prets').where({ statut: "Retard" })
         res.status(200).json(prets)
     }
-    catch(error){
+    catch (error) {
         console.error("Erreur lors de la récupération des prets en retard : ", error)
         res.status(500).json({ err: "Erreur serveur" })
     }
 })
 
-app.get('/getPretsPaye', async (req, res)=>{
-    try{
-        const prets = await db('prets').where({statut: "payé"}) 
+app.get('/getPretsPaye', async (req, res) => {
+    try {
+        const prets = await db('prets').where({ statut: "payé" })
         res.status(200).json(prets)
     }
-    catch(error){
+    catch (error) {
         console.error("Erreur lors de la récupération des prets payés : ", error)
+        res.status(500).json({ err: "Erreur serveur" })
+    }
+})
+
+app.get('/getRetards', async (req, res) => {
+    try {
+        const personnesRetards = await db("prets").where({ statut: "Retard" })
+            .join("clients", "clients.id", "prets.idClient")
+            .select("prets.*", "clients.prenom", "clients.nom")
+
+        if (!personnesRetards) {
+            return res.status(404).json({ message: "il n'y a pas de personnes en retard dans leurs paiements" })
+        }
+
+        if (personnesRetards.length == 0) {
+            res.status(200).json({ message: "Aucun prets en retard" })
+        }
+
+        const resultats = []
+
+        for (const pret of personnesRetards) {
+            const payement = await db('paiements').max('datePaiement as datePaiement').where({ idPret: pret.idPret }).first()
+            // check pas s'il y a une erreur pck c'est tres normal qu'il n'y ait necessairement pas de paiement            
+            let datePaiement = new Date(payement.datePaiement)
+            if (!payement.datePaiement) {
+                datePaiement = new Date(pret.dateDebut)
+            }
+            const diffMs = Date.now() - datePaiement.getTime()
+            const diffJours = Math.floor(diffMs / (1000 * 60 * 60 * 24))
+
+            resultats.push({
+                idPret: pret.idPret,
+                prenom: pret.prenom,
+                nom: pret.nom,
+                joursRetard: diffJours
+            })
+        }
+
+        res.status(200).json(resultats)
+    }
+    catch (error) {
+        console.error("Erreur lors de la récupération des personnes en retard : ", error)
         res.status(500).json({ err: "Erreur serveur" })
     }
 })

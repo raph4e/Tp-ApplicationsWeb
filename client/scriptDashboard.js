@@ -4,6 +4,15 @@ const retards = document.getElementById('nbreRetards')
 const totalPrets = document.getElementById('nbrePrete')
 const totalRembourse = document.getElementById('totalRembourse')
 const tableRetards = document.getElementById('tableRetards')
+const reload = document.getElementById('refresh')
+
+reload.addEventListener('click', async () => {
+    const updateRetard = await fetch('/updateRetard', { method: 'PUT' })
+    if (!updateRetard.ok) {
+        throw new Error("Erreur côté serveur")
+    }
+    load()
+})
 
 async function loadDashboard() {
     //récupère les routes
@@ -29,22 +38,49 @@ async function loadDashboard() {
     //transforme en json
     const prets = await resultat.json()
     //remplis la case du total prêté, aucunes virgules pck si tu compte les sous sur 20k+ t bs 
-    totalPrets.textContent = prets.reduce((sum, item) => sum + item.montant, 0).toFixed(0);
+    totalPrets.textContent = prets.reduce((sum, item) => sum + item.montant, 0).toFixed(0)
 
     const resultatPayements = await fetch('/getPaiements')
     if (!resultatPayements.ok) { throw new Error("Erreur du côté serveur") }
     //transforme yet again en json
     const paiements = await resultatPayements.json()
-    console.log(paiements)
     totalRembourse.textContent = paiements.reduce((sum, item) => sum + item.montantPaye, 0).toFixed(0)
 }
 
-loadDashboard()
-
 async function loadTable() {
-    
+    // vider le tableau en premier
+    tableRetards.innerHTML = `<tr>
+                                <th>Nom du client</th>
+                                <th>ID du prêt</th>
+                                <th>Jours de retard</th>
+                              </tr>`
+    try {
+        const res = await fetch('/getRetards')
+        if (!res.ok) { throw new Error("Erreur du côté serveur") }
+        const retards = await res.json()
+
+        for (const r of retards) {
+            // crée chaque ligne
+            const rangee = document.createElement("tr")
+            rangee.innerHTML = `<td>${r.prenom} ${r.nom}</td>
+                                <td>${r.idPret}</td>
+                                <td>${r.joursRetard}</td>`
+            //l'ajoute au tableau
+            tableRetards.appendChild(rangee)
+        }
+    }
+    catch (err) {
+        console.error(err)
+        alert("Impossible d'afficher les retards")
+    }
 }
 
+async function load() {
+    await loadDashboard()
+    await loadTable()
+}
+
+load()
 
 
 window.addEventListener('DOMContentLoaded', async () => {
@@ -53,15 +89,15 @@ window.addEventListener('DOMContentLoaded', async () => {
     // Vérifie qu'il existe 
     if (res.status === 200) {
         // Store l'admin connecté dans une variable format Json 
-        const adminConnecte = await res.json();
+        const adminConnecte = await res.json()
         if (!adminConnecte) {
             // S'il n'y a pas d'admin, redirection 
-            window.location.href = 'connexion-inscription.html';
+            window.location.href = 'connexion-inscription.html'
         }
     }
     else {
         // Sinon, redirige vers la page de connexion 
-        window.location.href = 'connexion-inscription.html';
+        window.location.href = 'connexion-inscription.html'
     }
 })
 
@@ -86,5 +122,3 @@ buttonDeconnexion.addEventListener('click', async () => {
         messageConfirmation.textContent = "Erreur lors de la déconnexion de l'admin connecté";
     }
 })
-
-
