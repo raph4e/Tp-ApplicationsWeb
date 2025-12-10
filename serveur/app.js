@@ -402,13 +402,13 @@ app.put('/updateRetard/', async (req, res) => {
             const diffMs = Date.now() - datePaiement.getTime()
             const diffJours = diffMs / (1000 * 60 * 60 * 24)
 
-            const datePret = new Date(prets.dateDebut)
+            const datePret = new Date(pret.dateDebut)
 
             // si pas remboursé au complet
-            if (prets.montant > 0) {
+            if (pret.montant > 0) {
                 //si plus de 31 jours depuis dernier payement ou si date limite dépassée
-                if (diffJours > 31 || (new Date(datePret.setMonth(datePret.getMonth() + prets.duree))).getTime() < new Date().getTime()) {
-                    await db('prets').where({ idPret }).update({ statut: "Retard" })
+                if (diffJours > 31 || (new Date(datePret.setMonth(datePret.getMonth() + pret.duree))).getTime() < new Date().getTime()) {
+                    await db('prets').where({ idPret: pret.idPret }).update({ statut: "Retard" })
                 }
                 return res.status(200).json({ message: "Statut du prêt mis à jour" })
             }

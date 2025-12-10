@@ -4,14 +4,16 @@ const retards = document.getElementById('nbreRetards')
 const totalPrets = document.getElementById('nbrePrete')
 const totalRembourse = document.getElementById('totalRembourse')
 const tableRetards = document.getElementById('tableRetards')
-const reload = document.getElementById('refresh')
+const btnReload = document.getElementById('refresh')
 
-reload.addEventListener('click', async () => {
+btnReload.addEventListener('click', async () => {
     const updateRetard = await fetch('/updateRetard', { method: 'PUT' })
     if (!updateRetard.ok) {
         throw new Error("Erreur côté serveur")
     }
     load()
+    console.log("la page à été rafraichie")
+    location.reload()
 })
 
 async function loadDashboard() {
